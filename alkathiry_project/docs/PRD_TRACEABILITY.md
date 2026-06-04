@@ -242,10 +242,16 @@ they can be promoted to config models on request.
   hourly SLA cron (reminder at T, auto-escalate at T+escalation); audit logging;
   **admin UI** (menus, list/form/search, status bar + action buttons) and a
   **Settings panel** for the governance/timing parameters.
-- **Still modelled but not yet behaving:** 5-condition validation matrix (Step 3),
-  OTP/barcode issuance + reset cron, commission posting, certificate rendering,
-  ad serving.
+- **✅ Step 3 implemented (distribution validation engine):**
+  `alkathiry.distribution.engine` runs the 5-condition matrix (FR-DIS-03 #1–#5)
+  with a safe JSON predicate DSL (no eval), reset-window-aware quota accounting,
+  and a structured verdict; the nightly `_cron_reset_balances` zeroes daily/
+  periodic balances per balance-type policy (logging `reset_loss` movements) while
+  preserving structural allocations.
+- **Still modelled but not yet behaving:** OTP/barcode issuance, commission
+  posting, certificate rendering, ad serving.
 - **Not started:** REST controllers, OAuth2/JWT layer, Flutter apps, reports.
 
-Next recommended step: **Step 3 — polymorphic distribution validation engine**
-(FR-DIS-03) + nightly balance reset.
+Next recommended step: **Step 4 — controllers + redemption loop (scan→OTP→confirm)
+and the metadata-driven Flutter layouts**, then **Step 5 — financial & ad
+management**.

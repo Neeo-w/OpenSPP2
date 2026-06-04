@@ -10,4 +10,16 @@
         <field name="interval_type">hours</field>
         <field name="active" eval="True" />
     </record>
+
+    <!-- Nightly balance reset: zeroes daily/periodic balances per balance-type policy. -->
+    <record id="cron_alk_balance_reset" model="ir.cron">
+        <field name="name">Alkathiry: Nightly Balance Reset</field>
+        <field name="model_id" ref="model_alkathiry_balance" />
+        <field name="state">code</field>
+        <field name="code">model._cron_reset_balances()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="nextcall" eval="(DateTime.now().replace(hour=23, minute=59, second=59))" />
+        <field name="active" eval="True" />
+    </record>
 </odoo>

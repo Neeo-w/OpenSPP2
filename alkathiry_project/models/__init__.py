@@ -14,6 +14,7 @@ from . import verification_request
 from . import distributor
 from . import wallet
 from . import wallet_movement
+from . import distribution_engine
 from . import delegation
 from . import transaction
 from . import credential

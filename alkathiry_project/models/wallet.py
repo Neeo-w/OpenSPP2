@@ -1,4 +1,8 @@
+import logging
+
 from odoo import _, api, fields, models
+
+_logger = logging.getLogger(__name__)
 
 
 class AlkWallet(models.Model):
@@ -89,6 +93,53 @@ class AlkBalance(models.Model):
             "A wallet holds a single balance per balance type.",
         ),
     ]
+
+    # ------------------------------------------------------------------
+    # Nightly reset engine (Step 3)
+    # ------------------------------------------------------------------
+    def _do_reset(self, reason="daily"):
+        """Zero the balance, logging the lost amount as a reset_loss movement."""
+        self.ensure_one()
+        lost = self.current_amount
+        if lost:
+            self.env["alkathiry.wallet.movement"].sudo().create(
+                {
+                    "wallet_id": self.wallet_id.id,
+                    "partner_id": self.wallet_id.partner_id.id,
+                    "movement_type": "reset_loss",
+                    "amount": lost,
+                    "balance_type_id": self.balance_type_id.id,
+                    "reason": _("Balance reset (%s)") % reason,
+                }
+            )
+        self.write({"current_amount": 0.0, "last_reset_at": fields.Datetime.now()})
+
+    @api.model
+    def _cron_reset_balances(self):
+        """Evaluate each balance against its type's reset policy.
+
+        Daily balances are zeroed once per day; periodic balances every N days;
+        'never'/'manual' (structural periodic allocations) are left intact. The
+        per-type policy makes the behaviour fully configurable.
+        """
+        now = fields.Datetime.now()
+        balances = self.search([])
+        for bal in balances:
+            balance_type = bal.balance_type_id
+            policy = balance_type.reset_policy if balance_type else "never"
+            last = bal.last_reset_at
+            try:
+                if policy == "daily":
+                    if not last or last.date() < now.date():
+                        bal._do_reset(reason="daily")
+                elif policy == "periodic":
+                    days = balance_type.reset_period_days or 0
+                    if days and (not last or (now - last).days >= days):
+                        bal._do_reset(reason="periodic")
+                # 'never' / 'manual' → skip (structural allocations preserved)
+            except Exception:  # pragma: no cover - isolate per-record failures
+                _logger.exception("Balance reset failed for balance %s", bal.id)
+        return True
 
 
 class AlkCommissionRule(models.Model):
