@@ -39,11 +39,17 @@ class AlkVerifierRoleAssignment(models.Model):
     )
     scope_value = fields.Char(
         string="Scope Value",
-        help="Concrete scope, e.g. neighborhood or tribe name, or a region key. "
-        "Empty means the assignment applies to the whole scope type.",
+        help="Optional free-form scope key. Empty means the assignment applies to "
+        "the whole scope type / area subtree.",
         index=True,
     )
-    region_id = fields.Many2one("res.country.state", string="Region Scope", index=True)
+    area_id = fields.Many2one(
+        "alkathiry.geo.area",
+        string="Area Scope",
+        index=True,
+        help="Node in the dynamic geographic/tribal tree. The verifier is matched "
+        "to any beneficiary located at this node or any of its descendants.",
+    )
 
     active = fields.Boolean(default=True)
     date_start = fields.Date(string="Valid From")
@@ -58,7 +64,7 @@ class AlkVerifierRoleAssignment(models.Model):
     _sql_constraints = [
         (
             "user_stage_scope_uniq",
-            "unique(user_id, stage_id, scope_value, region_id)",
+            "unique(user_id, stage_id, scope_value, area_id)",
             "This verifier already holds this tier for the given scope.",
         ),
     ]
@@ -71,6 +77,6 @@ class AlkVerifierRoleAssignment(models.Model):
             CREATE INDEX IF NOT EXISTS
                 alkathiry_verifier_role_match_idx
             ON alkathiry_verifier_role_assignment
-                (stage_id, scope_type, scope_value, region_id)
+                (stage_id, scope_type, area_id)
             """
         )

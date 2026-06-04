@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo noupdate="1">
+    <!-- Verifier SLA sweep: reminders at T hours, auto-escalation at T+escalation. -->
+    <record id="cron_alk_verification_sla" model="ir.cron">
+        <field name="name">Alkathiry: Verification SLA Sweep</field>
+        <field name="model_id" ref="model_alkathiry_verification_request" />
+        <field name="state">code</field>
+        <field name="code">model._cron_check_sla()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">hours</field>
+        <field name="active" eval="True" />
+    </record>
+</odoo>

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <menuitem id="menu_alk_root" name="Alkathiry" sequence="5" />
+
+    <!-- Verification -->
+    <menuitem id="menu_alk_verification" name="Verification" parent="menu_alk_root" sequence="10" />
+    <menuitem
+        id="menu_alk_verification_requests"
+        name="Requests"
+        parent="menu_alk_verification"
+        action="action_alk_verification_request"
+        sequence="10"
+    />
+    <menuitem
+        id="menu_alk_verification_stages"
+        name="Stages"
+        parent="menu_alk_verification"
+        action="action_alk_stage_config"
+        sequence="20"
+    />
+    <menuitem
+        id="menu_alk_verifier_roles"
+        name="Verifier Roles"
+        parent="menu_alk_verification"
+        action="action_alk_verifier_role"
+        sequence="30"
+    />
+
+    <!-- Configuration -->
+    <menuitem id="menu_alk_config" name="Configuration" parent="menu_alk_root" sequence="90" />
+    <menuitem
+        id="menu_alk_config_categories"
+        name="Categories"
+        parent="menu_alk_config"
+        action="action_alk_category"
+        sequence="10"
+    />
+    <menuitem
+        id="menu_alk_config_balance_types"
+        name="Balance Types"
+        parent="menu_alk_config"
+        action="action_alk_balance_type"
+        sequence="20"
+    />
+    <menuitem
+        id="menu_alk_config_geo_areas"
+        name="Geographic Areas"
+        parent="menu_alk_config"
+        action="action_alk_geo_area"
+        sequence="30"
+    />
+    <menuitem
+        id="menu_alk_config_geo_levels"
+        name="Area Levels"
+        parent="menu_alk_config"
+        action="action_alk_geo_level"
+        sequence="40"
+    />
+    <menuitem
+        id="menu_alk_config_settings"
+        name="Settings"
+        parent="menu_alk_config"
+        action="action_alk_config_settings"
+        sequence="99"
+        groups="base.group_system"
+    />
+</odoo>

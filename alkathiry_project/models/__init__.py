@@ -1,5 +1,6 @@
 # Order matters: define base/config models before models that reference them.
 from . import res_company
+from . import res_config_settings
 from . import geo_area
 from . import verification_stage_config
 from . import dynamic_category

@@ -20,11 +20,16 @@
     "external_dependencies": {
         "python": [],
     },
-    # NOTE: Phase 0 / Step 1 deliverable is the data layer only. Security ACLs,
-    # views, controllers, API routes and Flutter payload builders are intentionally
-    # deferred until the models are signed off.
+    # Step 1: data layer. Step 2: hierarchical verification engine + admin UI.
+    # Controllers, API routes and Flutter payload builders remain deferred.
     "data": [
         "security/ir.model.access.csv",
+        "data/ir_sequence.xml",
+        "data/ir_cron.xml",
+        "views/alk_verification_views.xml",
+        "views/alk_config_views.xml",
+        "views/res_config_settings_views.xml",
+        "views/alk_menus.xml",
     ],
     "assets": {},
     "demo": [],

@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <!-- ============ Dynamic Categories ============ -->
+    <record id="view_alk_category_form" model="ir.ui.view">
+        <field name="name">alk.dynamic.category.form</field>
+        <field name="model">alkathiry.dynamic.category</field>
+        <field name="arch" type="xml">
+            <form string="Dynamic Category">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name" />
+                            <field name="code" />
+                            <field name="verification_method" />
+                            <field name="active" />
+                        </group>
+                        <group>
+                            <field name="stage_config_ids" widget="many2many_tags" />
+                        </group>
+                    </group>
+                    <field name="description" placeholder="Description..." />
+                    <notebook>
+                        <page string="Registration Fields" name="fields">
+                            <field name="field_ids">
+                                <list editable="bottom">
+                                    <field name="sequence" widget="handle" />
+                                    <field name="name" />
+                                    <field name="technical_name" />
+                                    <field name="field_type" />
+                                    <field name="required" />
+                                    <field name="placeholder" optional="hide" />
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Eligibility Predicate" name="eligibility">
+                            <field name="eligibility_domain" widget="json" />
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_alk_category_list" model="ir.ui.view">
+        <field name="name">alk.dynamic.category.list</field>
+        <field name="model">alkathiry.dynamic.category</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="sequence" widget="handle" />
+                <field name="name" />
+                <field name="code" />
+                <field name="verification_method" />
+                <field name="active" widget="boolean_toggle" />
+            </list>
+        </field>
+    </record>
+
+    <record id="action_alk_category" model="ir.actions.act_window">
+        <field name="name">Categories</field>
+        <field name="res_model">alkathiry.dynamic.category</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- ============ Balance Types ============ -->
+    <record id="view_alk_balance_type_list" model="ir.ui.view">
+        <field name="name">alk.balance.type.config.list</field>
+        <field name="model">alkathiry.balance.type.config</field>
+        <field name="arch" type="xml">
+            <list editable="bottom">
+                <field name="sequence" widget="handle" />
+                <field name="name" />
+                <field name="code" />
+                <field name="kind" />
+                <field name="reset_policy" />
+                <field name="reset_period_days" />
+                <field name="is_monetary" />
+                <field name="allow_negative" />
+                <field name="default_limit" />
+                <field name="active" widget="boolean_toggle" />
+            </list>
+        </field>
+    </record>
+
+    <record id="action_alk_balance_type" model="ir.actions.act_window">
+        <field name="name">Balance Types</field>
+        <field name="res_model">alkathiry.balance.type.config</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- ============ Geographic / Tribal Areas ============ -->
+    <record id="view_alk_geo_level_list" model="ir.ui.view">
+        <field name="name">alk.geo.area.level.list</field>
+        <field name="model">alkathiry.geo.area.level</field>
+        <field name="arch" type="xml">
+            <list editable="bottom">
+                <field name="sequence" widget="handle" />
+                <field name="name" />
+                <field name="code" />
+                <field name="active" widget="boolean_toggle" />
+            </list>
+        </field>
+    </record>
+
+    <record id="action_alk_geo_level" model="ir.actions.act_window">
+        <field name="name">Area Levels</field>
+        <field name="res_model">alkathiry.geo.area.level</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="view_alk_geo_area_list" model="ir.ui.view">
+        <field name="name">alk.geo.area.list</field>
+        <field name="model">alkathiry.geo.area</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="complete_name" />
+                <field name="level_id" />
+                <field name="parent_id" />
+                <field name="active" widget="boolean_toggle" />
+            </list>
+        </field>
+    </record>
+
+    <record id="view_alk_geo_area_form" model="ir.ui.view">
+        <field name="name">alk.geo.area.form</field>
+        <field name="model">alkathiry.geo.area</field>
+        <field name="arch" type="xml">
+            <form string="Geographic / Tribal Area">
+                <sheet>
+                    <group>
+                        <field name="name" />
+                        <field name="code" />
+                        <field name="level_id" />
+                        <field name="parent_id" />
+                        <field name="active" />
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_alk_geo_area" model="ir.actions.act_window">
+        <field name="name">Geographic Areas</field>
+        <field name="res_model">alkathiry.geo.area</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

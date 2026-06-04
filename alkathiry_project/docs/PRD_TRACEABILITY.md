@@ -232,14 +232,20 @@ they can be promoted to config models on request.
 
 ## 9. What is genuinely working vs. modelled-only
 
-- **Working at the DB level today:** immutability triggers on `transaction` and
+- **Working at the DB level:** immutability triggers on `transaction` and
   `audit.log`; all indexes; uniqueness constraints; the full dynamic schema is
   installable.
-- **Modelled but not yet behaving:** verification state machine, 5-condition
-  validation matrix, OTP/barcode issuance, nightly reset, commission posting,
-  certificate rendering, ad serving — all are **Step 2–5 / controller** work.
-- **Not started:** REST controllers, OAuth2/JWT layer, Flutter apps, reports,
-  admin views.
+- **✅ Step 2 implemented (verification engine):** dynamic state machine reading
+  the pipeline from `verification.stage.config` (+category override); approve /
+  reject / escalate transitions; BR-VER-03 auto-escalation after X consecutive
+  rejections; FR-VER-05 scope matching via the `geo.area` tree; quorum policy;
+  hourly SLA cron (reminder at T, auto-escalate at T+escalation); audit logging;
+  **admin UI** (menus, list/form/search, status bar + action buttons) and a
+  **Settings panel** for the governance/timing parameters.
+- **Still modelled but not yet behaving:** 5-condition validation matrix (Step 3),
+  OTP/barcode issuance + reset cron, commission posting, certificate rendering,
+  ad serving.
+- **Not started:** REST controllers, OAuth2/JWT layer, Flutter apps, reports.
 
-Next recommended step: **Step 2 — dynamic verification state machine** (UC-02 /
-FR-VER), which turns the ✅ data into 🔶→✅ behaviour.
+Next recommended step: **Step 3 — polymorphic distribution validation engine**
+(FR-DIS-03) + nightly balance reset.

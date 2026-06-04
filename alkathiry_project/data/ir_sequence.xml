@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo noupdate="1">
+    <record id="seq_alk_verification_request" model="ir.sequence">
+        <field name="name">Alkathiry Verification Request</field>
+        <field name="code">alkathiry.verification.request</field>
+        <field name="implementation">no_gap</field>
+        <field name="padding">6</field>
+        <field name="prefix">VR-%(range_year)s-</field>
+        <field name="use_date_range" eval="True" />
+        <field name="company_id" eval="False" />
+    </record>
+</odoo>

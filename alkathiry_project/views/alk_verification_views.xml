@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <!-- ============ Verification Stage Configuration ============ -->
+    <record id="view_alk_stage_config_list" model="ir.ui.view">
+        <field name="name">alk.verification.stage.config.list</field>
+        <field name="model">alkathiry.verification.stage.config</field>
+        <field name="arch" type="xml">
+            <list editable="bottom">
+                <field name="sequence" widget="handle" />
+                <field name="name" />
+                <field name="code" />
+                <field name="scope_type" />
+                <field name="role_id" />
+                <field name="approval_policy" />
+                <field name="required_approvals" />
+                <field name="is_committee" />
+                <field name="sla_reminder_hours" optional="hide" />
+                <field name="sla_escalation_hours" optional="hide" />
+                <field name="active" widget="boolean_toggle" />
+            </list>
+        </field>
+    </record>
+
+    <record id="view_alk_stage_config_form" model="ir.ui.view">
+        <field name="name">alk.verification.stage.config.form</field>
+        <field name="model">alkathiry.verification.stage.config</field>
+        <field name="arch" type="xml">
+            <form string="Verification Stage">
+                <sheet>
+                    <widget
+                        name="web_ribbon"
+                        title="Committee"
+                        invisible="not is_committee"
+                    />
+                    <group>
+                        <group string="Identity">
+                            <field name="name" />
+                            <field name="code" />
+                            <field name="sequence" />
+                            <field name="active" />
+                        </group>
+                        <group string="Scope &amp; Role">
+                            <field name="scope_type" />
+                            <field name="role_id" />
+                            <field name="is_committee" />
+                        </group>
+                        <group string="Decision Policy">
+                            <field name="approval_policy" />
+                            <field
+                                name="required_approvals"
+                                invisible="approval_policy != 'quorum'"
+                            />
+                        </group>
+                        <group string="SLA Overrides (hours)">
+                            <field name="sla_reminder_hours" />
+                            <field name="sla_escalation_hours" />
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_alk_stage_config" model="ir.actions.act_window">
+        <field name="name">Verification Stages</field>
+        <field name="res_model">alkathiry.verification.stage.config</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Define your verification pipeline</p>
+            <p>Add, re-order, rename or remove tiers (Aqil, Sheikh, Grand Sheikh,
+                Committee, or any N-tier workflow) without code changes.</p>
+        </field>
+    </record>
+
+    <!-- ============ Verifier Role Assignment (FR-VER-05) ============ -->
+    <record id="view_alk_verifier_role_list" model="ir.ui.view">
+        <field name="name">alk.verifier.role.assignment.list</field>
+        <field name="model">alkathiry.verifier.role.assignment</field>
+        <field name="arch" type="xml">
+            <list editable="bottom">
+                <field name="user_id" />
+                <field name="stage_id" />
+                <field name="scope_type" />
+                <field name="area_id" />
+                <field name="scope_value" optional="hide" />
+                <field name="date_start" optional="hide" />
+                <field name="date_end" optional="hide" />
+                <field name="active" widget="boolean_toggle" />
+            </list>
+        </field>
+    </record>
+
+    <record id="action_alk_verifier_role" model="ir.actions.act_window">
+        <field name="name">Verifier Roles</field>
+        <field name="res_model">alkathiry.verifier.role.assignment</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Assign verifier roles</p>
+            <p>One account can hold several tiers across different areas (e.g. Aqil
+                for one neighborhood and Sheikh for another tribe).</p>
+        </field>
+    </record>
+
+    <!-- ============ Verification Request (state machine) ============ -->
+    <record id="view_alk_verification_request_list" model="ir.ui.view">
+        <field name="name">alk.verification.request.list</field>
+        <field name="model">alkathiry.verification.request</field>
+        <field name="arch" type="xml">
+            <list decoration-success="state == 'approved'" decoration-danger="state == 'rejected'" decoration-warning="state == 'escalated'">
+                <field name="name" />
+                <field name="partner_id" />
+                <field name="category_id" />
+                <field name="current_stage_id" />
+                <field name="consecutive_rejections" />
+                <field name="stage_entered_at" />
+                <field name="state" widget="badge" />
+            </list>
+        </field>
+    </record>
+
+    <record id="view_alk_verification_request_form" model="ir.ui.view">
+        <field name="name">alk.verification.request.form</field>
+        <field name="model">alkathiry.verification.request</field>
+        <field name="arch" type="xml">
+            <form string="Verification Request">
+                <header>
+                    <button
+                        name="action_submit"
+                        string="Submit"
+                        type="object"
+                        class="oe_highlight"
+                        invisible="state != 'draft'"
+                    />
+                    <button
+                        name="action_approve"
+                        string="Approve"
+                        type="object"
+                        class="oe_highlight"
+                        invisible="state not in ('in_progress', 'escalated')"
+                    />
+                    <button
+                        name="action_reject"
+                        string="Reject"
+                        type="object"
+                        invisible="state not in ('in_progress', 'escalated')"
+                    />
+                    <button
+                        name="action_escalate_to_committee"
+                        string="Escalate to Committee"
+                        type="object"
+                        invisible="state != 'in_progress'"
+                    />
+                    <field
+                        name="state"
+                        widget="statusbar"
+                        statusbar_visible="draft,in_progress,escalated,approved"
+                    />
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1" /></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="partner_id" />
+                            <field name="category_id" />
+                            <field name="company_id" groups="base.group_multi_company" />
+                        </group>
+                        <group>
+                            <field name="current_stage_id" readonly="1" />
+                            <field name="consecutive_rejections" readonly="1" />
+                            <field name="stage_entered_at" readonly="1" />
+                            <field name="reminder_sent_at" readonly="1" />
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Tier Decisions" name="decisions">
+                            <field name="line_ids" readonly="1">
+                                <list>
+                                    <field name="stage_id" />
+                                    <field name="verifier_id" />
+                                    <field name="decision" widget="badge" />
+                                    <field name="decision_date" />
+                                    <field name="remarks" />
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Submitted Values" name="submitted">
+                            <field name="submitted_values" widget="json" />
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter />
+            </form>
+        </field>
+    </record>
+
+    <record id="view_alk_verification_request_search" model="ir.ui.view">
+        <field name="name">alk.verification.request.search</field>
+        <field name="model">alkathiry.verification.request</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name" />
+                <field name="partner_id" />
+                <field name="current_stage_id" />
+                <filter name="in_progress" string="In Progress" domain="[('state', '=', 'in_progress')]" />
+                <filter name="escalated" string="Escalated" domain="[('state', '=', 'escalated')]" />
+                <filter name="approved" string="Approved" domain="[('state', '=', 'approved')]" />
+                <filter name="rejected" string="Rejected" domain="[('state', '=', 'rejected')]" />
+                <group expand="0" string="Group By">
+                    <filter name="group_stage" string="Current Tier" context="{'group_by': 'current_stage_id'}" />
+                    <filter name="group_state" string="Status" context="{'group_by': 'state'}" />
+                    <filter name="group_category" string="Category" context="{'group_by': 'category_id'}" />
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_alk_verification_request" model="ir.actions.act_window">
+        <field name="name">Verification Requests</field>
+        <field name="res_model">alkathiry.verification.request</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_alk_verification_request_search" />
+        <field name="context">{'search_default_in_progress': 1, 'search_default_escalated': 1}</field>
+    </record>
+</odoo>
