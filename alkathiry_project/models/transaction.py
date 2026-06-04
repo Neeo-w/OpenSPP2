@@ -17,6 +17,14 @@ class AlkTransaction(models.Model):
     _description = "Alkathiry Immutable Transaction Ledger"
     _order = "id desc"
 
+    # Human-friendly immutable reference (PRD: transaction_number).
+    transaction_number = fields.Char(
+        string="Transaction Number",
+        required=True,
+        copy=False,
+        index=True,
+    )
+
     # --- Move grouping (double-entry) ---
     move_uid = fields.Char(
         string="Move UID",
@@ -73,6 +81,30 @@ class AlkTransaction(models.Model):
     quantity = fields.Float(string="Quantity", help="For in-kind / voucher movements.")
     currency_id = fields.Many2one("res.currency", string="Currency")
 
+    # --- Redemption-loop linkage (Sequence Diagram 26.1) ---
+    barcode_session_id = fields.Char(string="Barcode Session", index=True)
+    otp_hash = fields.Char(string="OTP Hash")
+    delegation_id = fields.Many2one("alkathiry.delegation", string="Via Delegation")
+    delegated_for_partner_id = fields.Many2one(
+        "res.partner",
+        string="Delegated For",
+        help="Originating beneficiary when redemption is performed by a proxy.",
+        index=True,
+    )
+
+    # --- Multi-tier commission split (PRD 24.2.5) ---
+    commission_distributor = fields.Float(string="Distributor Commission")
+    commission_committee = fields.Float(string="Committee Commission")
+
+    status = fields.Selection(
+        selection=[("success", "Success"), ("failed", "Failed")],
+        string="Result",
+        default="success",
+        required=True,
+        index=True,
+    )
+    failure_reason = fields.Char(string="Failure Reason")
+
     # --- Immutability / audit columns ---
     posted_at = fields.Datetime(string="Posted At", default=fields.Datetime.now, required=True)
     posted_by = fields.Many2one("res.users", string="Posted By", default=lambda self: self.env.user)
@@ -86,6 +118,14 @@ class AlkTransaction(models.Model):
         default=lambda self: self.env.company,
         index=True,
     )
+
+    _sql_constraints = [
+        (
+            "transaction_number_uniq",
+            "unique(transaction_number)",
+            "Transaction number must be globally unique.",
+        ),
+    ]
 
     def init(self):
         super().init()

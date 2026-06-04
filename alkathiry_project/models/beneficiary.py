@@ -28,6 +28,8 @@ class ResPartner(models.Model):
             ("active", "Active"),
             ("suspended", "Suspended"),
             ("rejected", "Rejected"),
+            ("deceased", "Deceased"),
+            ("archived", "Archived"),
         ],
         string="Community Status",
         default="draft",
@@ -36,12 +38,38 @@ class ResPartner(models.Model):
         "(FR-DIS-03 #1: beneficiary must be active).",
     )
 
-    # Geographic placement used for scope matching of verifiers and allocations.
-    alk_neighborhood = fields.Char(string="Neighborhood")
-    alk_tribe = fields.Char(string="Tribe / Sub-tribe")
-    alk_region_id = fields.Many2one("res.country.state", string="Region", index=True)
+    # Geographic placement against the dynamic hierarchy (replaces fixed
+    # tribe_id / district_id columns from the PRD users table).
+    alk_area_id = fields.Many2one(
+        "alkathiry.geo.area",
+        string="Geographic / Tribal Area",
+        index=True,
+    )
+    alk_assigned_aqil_id = fields.Many2one(
+        "res.users",
+        string="Assigned Aqil",
+        help="First-tier verifier responsible for this beneficiary.",
+    )
+
+    # Demographic / lifecycle attributes (PRD users table).
+    alk_birth_date = fields.Date(string="Birth Date")
+    alk_gender = fields.Selection(
+        selection=[("male", "Male"), ("female", "Female")],
+        string="Gender",
+    )
+    alk_marital_status = fields.Char(string="Marital Status")
+    alk_family_count = fields.Integer(string="Family Count", default=1)
+    alk_device_token_fcm = fields.Char(string="FCM Device Token")
+    # National ID kept hashed + encrypted (never in clear), per security spec.
+    alk_national_id_hash = fields.Char(string="National ID Hash", index=True)
+    alk_national_id_enc = fields.Char(string="National ID (Encrypted)")
+    alk_activated_at = fields.Datetime(string="Activated At")
+    alk_deceased_at = fields.Datetime(string="Deceased At")
 
     alk_wallet_ids = fields.One2many("alkathiry.wallet", "partner_id", string="Wallets")
     alk_identity_token_ids = fields.One2many(
         "alkathiry.identity.token", "partner_id", string="Identity Tokens"
+    )
+    alk_delegation_given_ids = fields.One2many(
+        "alkathiry.delegation", "delegator_id", string="Delegations Granted"
     )

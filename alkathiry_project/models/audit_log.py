@@ -16,9 +16,12 @@ class AlkAuditLog(models.Model):
 
     event_time = fields.Datetime(string="Event Time", default=fields.Datetime.now, required=True)
     user_id = fields.Many2one("res.users", string="Actor", default=lambda self: self.env.user)
+    actor_role = fields.Char(string="Actor Role", help="Structural role under which the action was taken.")
     action = fields.Char(string="Action", required=True, index=True)
-    model_name = fields.Char(string="Model", index=True)
-    res_id = fields.Integer(string="Record ID", index=True)
+    # Polymorphic target: model_name/res_id mirror PRD entity_type/entity_id.
+    model_name = fields.Char(string="Entity Type", index=True)
+    res_id = fields.Integer(string="Entity ID", index=True)
+    user_agent = fields.Char(string="User Agent")
 
     # Polymorphic before/after snapshots.
     old_values = fields.Json(string="Old Values")

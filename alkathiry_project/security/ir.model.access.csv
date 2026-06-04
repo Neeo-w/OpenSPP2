@@ -1,4 +1,14 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_alk_geo_area_user,alk.geo.area.user,model_alkathiry_geo_area,base.group_user,1,0,0,0
+access_alk_geo_area_admin,alk.geo.area.admin,model_alkathiry_geo_area,base.group_system,1,1,1,1
+access_alk_geo_area_level_user,alk.geo.area.level.user,model_alkathiry_geo_area_level,base.group_user,1,0,0,0
+access_alk_geo_area_level_admin,alk.geo.area.level.admin,model_alkathiry_geo_area_level,base.group_system,1,1,1,1
+access_alk_service_provider_user,alk.service.provider.user,model_alkathiry_service_provider,base.group_user,1,0,0,0
+access_alk_service_provider_admin,alk.service.provider.admin,model_alkathiry_service_provider,base.group_system,1,1,1,1
+access_alk_wallet_movement_user,alk.wallet.movement.user,model_alkathiry_wallet_movement,base.group_user,1,0,0,0
+access_alk_wallet_movement_admin,alk.wallet.movement.admin,model_alkathiry_wallet_movement,base.group_system,1,1,1,1
+access_alk_delegation_user,alk.delegation.user,model_alkathiry_delegation,base.group_user,1,1,1,0
+access_alk_delegation_admin,alk.delegation.admin,model_alkathiry_delegation,base.group_system,1,1,1,1
 access_alk_verification_stage_config_user,alk.verification.stage.config.user,model_alkathiry_verification_stage_config,base.group_user,1,0,0,0
 access_alk_verification_stage_config_admin,alk.verification.stage.config.admin,model_alkathiry_verification_stage_config,base.group_system,1,1,1,1
 access_alk_dynamic_category_user,alk.dynamic.category.user,model_alkathiry_dynamic_category,base.group_user,1,0,0,0

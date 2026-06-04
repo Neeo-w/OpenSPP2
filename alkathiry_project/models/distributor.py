@@ -59,6 +59,23 @@ class AlkDistributorAllocation(models.Model):
         compute="_compute_quantity_on_hand",
         store=True,
     )
+    commission_rate = fields.Float(
+        string="Commission Rate (%)",
+        help="Distributor commission for this allocation (PRD 24.2.4).",
+    )
+    shipment_status = fields.Selection(
+        selection=[
+            ("pending_shipment", "Pending Shipment"),
+            ("shipped", "Shipped"),
+            ("received_confirmed", "Received - Confirmed"),
+            ("received_with_issue", "Received - With Issue"),
+        ],
+        string="Shipment Status",
+        default="pending_shipment",
+        index=True,
+    )
+    confirmed_at = fields.Datetime(string="Confirmed At")
+    issue_note = fields.Text(string="Issue Note")
 
     company_id = fields.Many2one(
         "res.company",

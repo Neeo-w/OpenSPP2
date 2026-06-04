@@ -16,6 +16,23 @@ class AlkAdCampaign(models.Model):
     name = fields.Char(required=True, translate=True)
     sequence = fields.Integer(default=10)
     active = fields.Boolean(default=True)
+    provider_id = fields.Many2one(
+        "alkathiry.service.provider",
+        string="Provider",
+        index=True,
+        help="Advertiser funding the campaign (PRD 24.2).",
+    )
+    ad_type = fields.Selection(
+        selection=[
+            ("promotion", "Promotion"),
+            ("clearance", "Clearance"),
+            ("wholesale", "Wholesale"),
+            ("rewards", "Rewards"),
+        ],
+        string="Ad Type",
+        default="promotion",
+        required=True,
+    )
     state = fields.Selection(
         selection=[
             ("draft", "Draft"),
@@ -50,8 +67,11 @@ class AlkAdCampaign(models.Model):
     targeting_expression = fields.Json(string="Targeting Expression")
     priority = fields.Integer(string="Serving Priority", default=10)
 
-    impressions = fields.Integer(string="Impressions", default=0)
+    cost = fields.Float(string="Campaign Cost")
+    commission_rate = fields.Float(string="Commission Rate (%)")
+    impressions = fields.Integer(string="Impressions (Reach)", default=0)
     clicks = fields.Integer(string="Clicks", default=0)
+    conversions = fields.Integer(string="Conversions", default=0)
 
     company_id = fields.Many2one(
         "res.company",

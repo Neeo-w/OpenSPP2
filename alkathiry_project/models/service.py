@@ -19,6 +19,56 @@ class AlkService(models.Model):
     active = fields.Boolean(default=True)
     description = fields.Text(translate=True)
 
+    provider_id = fields.Many2one(
+        "alkathiry.service.provider",
+        string="Provider",
+        index=True,
+        ondelete="restrict",
+        help="Funding / supplying provider (PRD 24.2.4).",
+    )
+    service_type = fields.Selection(
+        selection=[
+            ("simple", "Simple"),
+            ("composite", "Composite"),
+            ("discount", "Discount"),
+            ("reward", "Reward"),
+        ],
+        string="Service Type",
+        default="simple",
+        required=True,
+    )
+    # Sub-items of a composite service, e.g. [{"label": ..., "qty": ...}, ...].
+    components = fields.Json(string="Composite Components")
+
+    # Quantity tracking (PRD: total_quantity / remaining_quantity).
+    total_quantity = fields.Integer(string="Total Quantity", default=0)
+    remaining_quantity = fields.Integer(string="Remaining Quantity", default=0)
+
+    # Redemption frequency cap, e.g. {"type": "daily"|"weekly", "count": N}.
+    withdrawal_limit = fields.Json(string="Withdrawal Limit")
+
+    date_start = fields.Date(string="Start Date")
+    date_end = fields.Date(string="End Date")
+
+    state = fields.Selection(
+        selection=[
+            ("draft", "Draft"),
+            ("pending_committee", "Pending Committee"),
+            ("approved", "Approved"),
+            ("pending_distributor", "Pending Distributor"),
+            ("active", "Active"),
+            ("suspended", "Suspended"),
+            ("completed", "Completed"),
+            ("expired", "Expired"),
+        ],
+        string="Status",
+        default="draft",
+        required=True,
+        index=True,
+    )
+    approved_by = fields.Many2one("res.users", string="Approved By")
+    approved_at = fields.Datetime(string="Approved At")
+
     distribution_model = fields.Selection(
         selection=[
             ("a", "Model A"),
@@ -50,6 +100,11 @@ class AlkService(models.Model):
         string="Targeted Categories",
         help="Convenience pre-filter; the full predicate lives in "
         "targeting_expression.",
+    )
+    area_ids = fields.Many2many(
+        "alkathiry.geo.area",
+        string="Targeted Areas",
+        help="Regional targeting against the dynamic geographic hierarchy.",
     )
 
     allocation_ids = fields.One2many(
@@ -110,10 +165,10 @@ class AlkServiceAllocation(models.Model):
     date_end = fields.Datetime(string="End", index=True)
 
     # Targeting refinements applied on top of the service predicate.
-    region_ids = fields.Many2many(
-        "res.country.state",
-        string="Targeted Regions",
-        help="Regional filtering scope for this allocation.",
+    area_ids = fields.Many2many(
+        "alkathiry.geo.area",
+        string="Targeted Areas",
+        help="Regional filtering scope for this allocation (dynamic hierarchy).",
     )
     targeting_expression = fields.Json(
         string="Allocation Targeting Override",

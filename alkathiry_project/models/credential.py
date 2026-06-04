@@ -60,6 +60,7 @@ class AlkCredential(models.Model):
     _order = "issued_at desc"
 
     name = fields.Char(string="Reference", required=True, copy=False, default="New", index=True)
+    reference_number = fields.Char(string="Certificate Number", copy=False, index=True)
     template_id = fields.Many2one(
         "alkathiry.credential.template",
         string="Template",
@@ -67,6 +68,17 @@ class AlkCredential(models.Model):
         ondelete="restrict",
         index=True,
     )
+    credential_type = fields.Selection(
+        selection=[
+            ("membership", "Membership"),
+            ("donation", "Donation"),
+            ("beneficiary", "Beneficiary"),
+            ("identification", "Identification"),
+        ],
+        string="Certificate Type",
+        index=True,
+    )
+    provider_id = fields.Many2one("alkathiry.service.provider", string="Issuing Provider")
     partner_id = fields.Many2one(
         "res.partner",
         string="Holder",
@@ -77,7 +89,10 @@ class AlkCredential(models.Model):
     # Bound attribute values resolved from the database at issuance.
     payload = fields.Json(string="Bound Attributes")
     rendered_document = fields.Binary(string="Rendered Document", attachment=True)
+    pdf_url = fields.Char(string="Document URL")
+    signed_by = fields.Many2one("res.users", string="Signed By")
     signature = fields.Char(string="Digital Signature")
+    sent_to_email = fields.Boolean(string="Sent to Email", default=False)
     issued_at = fields.Datetime(string="Issued At", default=fields.Datetime.now)
     valid_until = fields.Datetime(string="Valid Until")
     state = fields.Selection(
