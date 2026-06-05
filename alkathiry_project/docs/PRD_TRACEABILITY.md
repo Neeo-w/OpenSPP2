@@ -248,10 +248,18 @@ they can be promoted to config models on request.
   and a structured verdict; the nightly `_cron_reset_balances` zeroes daily/
   periodic balances per balance-type policy (logging `reset_loss` movements) while
   preserving structural allocations.
-- **Still modelled but not yet behaving:** OTP/barcode issuance, commission
-  posting, certificate rendering, ad serving.
-- **Not started:** REST controllers, OAuth2/JWT layer, Flutter apps, reports.
+- **✅ Step 4 implemented (API gateway + redemption loop + Flutter foundation):**
+  `alkathiry.token.service` issues/verifies barcode JWT, redemption OTP and session
+  JWT (HS256, mirrored by `identity.token` for revocation). REST controllers under
+  `/api/v1` cover OTP login, registration metadata, beneficiary services/barcode,
+  and the distributor `scan → OTP → confirm` loop (26.1), posting an immutable
+  double-entry redemption with commission split + stock decrement. A dependency-light
+  Flutter client (`mobile_app/`) renders registration/home/distributor screens
+  reflectively from the JSON payloads.
+- **Still modelled but not yet behaving:** commission *reporting*, certificate
+  rendering, ad serving (Step 5).
+- **Partially / hardening needed:** full OAuth2 flow (current login is phone+OTP →
+  session JWT), live camera scanning + offline queue on the Flutter side.
 
-Next recommended step: **Step 4 — controllers + redemption loop (scan→OTP→confirm)
-and the metadata-driven Flutter layouts**, then **Step 5 — financial & ad
-management**.
+Next recommended step: **Step 5 — native Odoo financial reports (§23.5.3) and the
+ad-serving endpoint**.

@@ -18,7 +18,7 @@
         "mail",
     ],
     "external_dependencies": {
-        "python": [],
+        "python": ["jwt"],
     },
     # Step 1: data layer. Step 2: hierarchical verification engine + admin UI.
     # Controllers, API routes and Flutter payload builders remain deferred.

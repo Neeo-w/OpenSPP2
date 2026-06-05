@@ -1,4 +1,5 @@
 import logging
+import secrets
 from datetime import datetime, time
 
 from dateutil.relativedelta import relativedelta
@@ -236,3 +237,96 @@ class AlkDistributionEngine(models.AbstractModel):
             "conditions": conditions,
             "failed": failed,
         }
+
+    # ------------------------------------------------------------------
+    # Redemption posting (confirm step) — immutable double-entry
+    # ------------------------------------------------------------------
+    def post_redemption(self, partner, allocation, distributor, quantity=1.0,
+                        otp_hash=None, barcode_session_id=None):
+        """Post an immutable redemption to the ledger and update derived state.
+
+        Re-validates the claim under a row lock-free read, then writes:
+          * a debit + credit pair on the immutable transaction ledger (Mifos-style),
+          * a debit wallet movement and balance decrement for the beneficiary,
+          * the distributor stock decrement,
+          * the multi-tier commission split.
+        """
+        verdict = self.validate_claim(partner, allocation, distributor, quantity)
+        if not verdict["ok"]:
+            return {"ok": False, "verdict": verdict}
+
+        service = allocation.service_id
+        balance_type = service.balance_type_id
+        # In-kind quota redemptions are quantity-based; monetary pricing (amount > 0)
+        # can be layered on later without changing the ledger structure.
+        amount = 0.0
+        move_uid = self.env["ir.sequence"].next_by_code("alkathiry.move") or secrets.token_hex(8)
+
+        # Commission split: distributor rate + committee (provider fee) rate.
+        dist_alloc = self.env["alkathiry.distributor.allocation"].search(
+            [("distributor_id", "=", distributor.id),
+             ("service_allocation_id", "=", allocation.id)], limit=1)
+        commission_distributor = (dist_alloc.commission_rate or 0.0) / 100.0 * amount
+        commission_committee = (
+            (service.provider_id.service_fee_rate or 0.0) / 100.0 * amount
+        )
+
+        txn_model = self.env["alkathiry.transaction"].sudo()
+        common = {
+            "move_uid": move_uid,
+            "transaction_type": "redemption",
+            "partner_id": partner.id,
+            "distributor_id": distributor.id,
+            "service_id": service.id,
+            "service_allocation_id": allocation.id,
+            "balance_type_id": balance_type.id if balance_type else False,
+            "amount": amount,
+            "quantity": quantity,
+            "status": "success",
+            "barcode_session_id": barcode_session_id,
+            "otp_hash": otp_hash,
+            "commission_distributor": commission_distributor,
+            "commission_committee": commission_committee,
+        }
+        wallet = self._get_or_create_wallet(partner)
+        debit = txn_model.create(dict(
+            common,
+            transaction_number=self.env["ir.sequence"].next_by_code("alkathiry.transaction"),
+            direction="debit",
+            wallet_id=wallet.id,
+        ))
+        txn_model.create(dict(
+            common,
+            transaction_number=self.env["ir.sequence"].next_by_code("alkathiry.transaction"),
+            direction="credit",
+        ))
+
+        # Wallet movement + balance decrement (in-kind quota consumption).
+        if balance_type:
+            balance = self.env["alkathiry.balance"].sudo().search(
+                [("wallet_id", "=", wallet.id), ("balance_type_id", "=", balance_type.id)],
+                limit=1)
+            if balance:
+                self.env["alkathiry.wallet.movement"].sudo().create({
+                    "wallet_id": wallet.id,
+                    "partner_id": partner.id,
+                    "movement_type": "debit",
+                    "amount": quantity,
+                    "balance_type_id": balance_type.id,
+                    "reason": _("Redemption %s") % debit.transaction_number,
+                    "related_transaction_id": debit.id,
+                })
+                balance.current_amount = balance.current_amount - quantity
+
+        # Distributor stock decrement.
+        if dist_alloc:
+            dist_alloc.quantity_distributed = dist_alloc.quantity_distributed + quantity
+
+        return {"ok": True, "transaction_number": debit.transaction_number, "verdict": verdict}
+
+    def _get_or_create_wallet(self, partner):
+        wallet = self.env["alkathiry.wallet"].sudo().search(
+            [("partner_id", "=", partner.id)], limit=1)
+        if not wallet:
+            wallet = self.env["alkathiry.wallet"].sudo().create({"partner_id": partner.id})
+        return wallet

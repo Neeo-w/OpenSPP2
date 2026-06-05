@@ -1,0 +1,22 @@
+name: alkathiry_app
+description: Metadata-driven Flutter client for the Alkathiry community platform.
+publish_to: "none"
+version: 0.1.0+1
+
+# Kept intentionally lightweight (http only) so the project compiles in on-device
+# IDEs such as AIDE / Android IDE without native plugin toolchains. Optional
+# camera/QR plugins (mobile_scanner, qr_flutter) can be added on a desktop build.
+environment:
+  sdk: ">=3.0.0 <4.0.0"
+  flutter: ">=3.10.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  http: ^1.2.0
+
+dev_dependencies:
+  flutter_lints: ^3.0.0
+
+flutter:
+  uses-material-design: true
