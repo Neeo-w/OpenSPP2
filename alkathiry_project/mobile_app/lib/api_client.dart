@@ -64,6 +64,12 @@ class ApiClient {
   Future<Map<String, dynamic>> barcode() async =>
       _unwrap(await http.get(_u('/me/barcode'), headers: _headers));
 
+  Future<List<dynamic>> ads(String placement) async {
+    final data = await _unwrap(
+        await http.get(_u('/ads?placement=$placement'), headers: _headers));
+    return (data['ads'] as List<dynamic>?) ?? [];
+  }
+
   // ---- Distributor loop ----
   Future<Map<String, dynamic>> scan(String barcode, int allocationId, double qty) async {
     final r = await http.post(_u('/distributor/scan'),

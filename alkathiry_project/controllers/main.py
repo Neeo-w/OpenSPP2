@@ -180,6 +180,28 @@ class AlkathiryMobileApi(http.Controller):
         return _json(result)
 
     # ------------------------------------------------------------------
+    # Advertisements (decoupled from service execution)
+    # ------------------------------------------------------------------
+    @http.route(f"{API}/ads", type="http", auth="public", methods=["GET"], csrf=False, cors="*")
+    def ads(self, placement="beneficiary_home", **kw):
+        user = self._auth_user()
+        if not user:
+            return _err("UNAUTHORIZED", "Invalid session", status=401)
+        banners = self._svc("alkathiry.ad.campaign").serve_for(user.partner_id, placement)
+        return _json({"ads": banners})
+
+    @http.route(f"{API}/ads/<int:ad_id>/click", type="http", auth="public", methods=["POST"], csrf=False, cors="*")
+    def ad_click(self, ad_id, **kw):
+        user = self._auth_user()
+        if not user:
+            return _err("UNAUTHORIZED", "Invalid session", status=401)
+        ad = self._svc("alkathiry.ad.campaign").browse(ad_id)
+        if not ad.exists():
+            return _err("AD_NOT_FOUND", "Unknown campaign", status=404)
+        ad.register_click()
+        return _json({"clicked": True})
+
+    # ------------------------------------------------------------------
     # Distributor redemption loop (Sequence Diagram 26.1)
     # ------------------------------------------------------------------
     def _distributor_for(self, user):

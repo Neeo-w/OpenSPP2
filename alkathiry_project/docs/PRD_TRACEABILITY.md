@@ -256,10 +256,19 @@ they can be promoted to config models on request.
   double-entry redemption with commission split + stock decrement. A dependency-light
   Flutter client (`mobile_app/`) renders registration/home/distributor screens
   reflectively from the JSON payloads.
-- **Still modelled but not yet behaving:** commission *reporting*, certificate
-  rendering, ad serving (Step 5).
+- **✅ Step 5 implemented (financial reporting + ad management):**
+  `alkathiry.financial.report` derives the Income Statement, Cash Flow and Balance
+  Sheet from the immutable ledger (revenue streams, commissions, expenses, wallet
+  balances), surfaced via an admin wizard + read-only Ledger view + Finance menu.
+  `ad.campaign.serve_for()` returns targeted, currently-running banners using the
+  safe predicate evaluator (decoupled from redemption), with impression/click
+  counting via `GET /ads` and `POST /ads/{id}/click`; Marketing menu for campaign
+  management; Flutter home renders the banner strip.
 - **Partially / hardening needed:** full OAuth2 flow (current login is phone+OTP →
-  session JWT), live camera scanning + offline queue on the Flutter side.
+  session JWT); live camera scanning + offline queue on the Flutter side;
+  certificate rendering engine; deeper integration with Odoo `account.move` if a
+  formal chart-of-accounts is required.
 
-Next recommended step: **Step 5 — native Odoo financial reports (§23.5.3) and the
-ad-serving endpoint**.
+All five PRD implementation steps now have a working backend. Remaining polish:
+OAuth2 hardening, certificate issuance engine, Flutter production add-ons, reports
+UI, and an end-to-end runtime install/test.

@@ -28,6 +28,7 @@
         "data/ir_cron.xml",
         "views/alk_verification_views.xml",
         "views/alk_config_views.xml",
+        "views/alk_finance_views.xml",
         "views/res_config_settings_views.xml",
         "views/alk_menus.xml",
     ],

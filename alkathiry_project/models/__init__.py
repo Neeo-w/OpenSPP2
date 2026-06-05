@@ -21,3 +21,4 @@ from . import transaction
 from . import credential
 from . import ad_campaign
 from . import audit_log
+from . import financial_report

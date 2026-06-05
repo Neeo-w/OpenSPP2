@@ -49,3 +49,4 @@ access_alk_credential_user,alk.credential.user,model_alkathiry_credential,base.g
 access_alk_credential_admin,alk.credential.admin,model_alkathiry_credential,base.group_system,1,1,1,1
 access_alk_ad_campaign_user,alk.ad.campaign.user,model_alkathiry_ad_campaign,base.group_user,1,0,0,0
 access_alk_ad_campaign_admin,alk.ad.campaign.admin,model_alkathiry_ad_campaign,base.group_system,1,1,1,1
+access_alk_financial_report_wizard_user,alk.financial.report.wizard.user,model_alkathiry_financial_report_wizard,base.group_system,1,1,1,1

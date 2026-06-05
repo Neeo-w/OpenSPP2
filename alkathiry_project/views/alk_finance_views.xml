@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <!-- ============ Financial Report Wizard (§23.5.3) ============ -->
+    <record id="view_alk_financial_report_wizard_form" model="ir.ui.view">
+        <field name="name">alk.financial.report.wizard.form</field>
+        <field name="model">alkathiry.financial.report.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Financial Report">
+                <group>
+                    <group>
+                        <field name="date_from" />
+                        <field name="date_to" />
+                    </group>
+                    <group>
+                        <field name="net_income" readonly="1" />
+                        <field name="net_cash_flow" readonly="1" />
+                        <field name="equity" readonly="1" />
+                    </group>
+                </group>
+                <field name="report_html" readonly="1" />
+                <footer>
+                    <button name="action_generate" string="Generate" type="object" class="oe_highlight" />
+                    <button string="Close" class="btn-secondary" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_alk_financial_report" model="ir.actions.act_window">
+        <field name="name">Financial Statements</field>
+        <field name="res_model">alkathiry.financial.report.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <!-- ============ Ledger (read-only) ============ -->
+    <record id="view_alk_transaction_list" model="ir.ui.view">
+        <field name="name">alk.transaction.list</field>
+        <field name="model">alkathiry.transaction</field>
+        <field name="arch" type="xml">
+            <list create="false" edit="false" delete="false">
+                <field name="transaction_number" />
+                <field name="posted_at" />
+                <field name="transaction_type" />
+                <field name="revenue_stream" optional="show" />
+                <field name="direction" />
+                <field name="partner_id" />
+                <field name="distributor_id" optional="hide" />
+                <field name="amount" sum="Amount" />
+                <field name="quantity" />
+                <field name="commission_distributor" optional="hide" />
+                <field name="commission_committee" optional="hide" />
+                <field name="status" widget="badge" />
+            </list>
+        </field>
+    </record>
+
+    <record id="action_alk_transaction" model="ir.actions.act_window">
+        <field name="name">Ledger</field>
+        <field name="res_model">alkathiry.transaction</field>
+        <field name="view_mode">list</field>
+    </record>
+
+    <!-- ============ Ad Campaigns ============ -->
+    <record id="view_alk_ad_campaign_list" model="ir.ui.view">
+        <field name="name">alk.ad.campaign.list</field>
+        <field name="model">alkathiry.ad.campaign</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name" />
+                <field name="ad_type" />
+                <field name="placement" />
+                <field name="provider_id" />
+                <field name="date_start" />
+                <field name="date_end" />
+                <field name="priority" />
+                <field name="impressions" />
+                <field name="clicks" />
+                <field name="state" widget="badge" />
+            </list>
+        </field>
+    </record>
+
+    <record id="view_alk_ad_campaign_form" model="ir.ui.view">
+        <field name="name">alk.ad.campaign.form</field>
+        <field name="model">alkathiry.ad.campaign</field>
+        <field name="arch" type="xml">
+            <form string="Ad Campaign">
+                <sheet>
+                    <group>
+                        <group string="Campaign">
+                            <field name="name" />
+                            <field name="ad_type" />
+                            <field name="provider_id" />
+                            <field name="placement" />
+                            <field name="priority" />
+                            <field name="state" />
+                        </group>
+                        <group string="Schedule &amp; Cost">
+                            <field name="date_start" />
+                            <field name="date_end" />
+                            <field name="cost" />
+                            <field name="commission_rate" />
+                        </group>
+                    </group>
+                    <group string="Creative">
+                        <field name="media_url" />
+                        <field name="click_url" />
+                        <field name="banner_image" widget="image" />
+                    </group>
+                    <group string="Targeting (JSON predicate)">
+                        <field name="targeting_expression" widget="json" nolabel="1" />
+                    </group>
+                    <group string="Metrics">
+                        <field name="impressions" readonly="1" />
+                        <field name="clicks" readonly="1" />
+                        <field name="conversions" readonly="1" />
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_alk_ad_campaign" model="ir.actions.act_window">
+        <field name="name">Ad Campaigns</field>
+        <field name="res_model">alkathiry.ad.campaign</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

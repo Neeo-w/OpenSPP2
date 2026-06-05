@@ -67,6 +67,18 @@ class AlkTransaction(models.Model):
     service_allocation_id = fields.Many2one(
         "alkathiry.service.allocation", string="Service Allocation", index=True
     )
+    # Classifies revenue/expense lines for the income statement (§23.5.3).
+    revenue_stream = fields.Selection(
+        selection=[
+            ("commission", "Commission"),
+            ("advertisement", "Advertisement"),
+            ("subscription", "Subscription"),
+            ("donation", "Donation"),
+            ("other", "Other"),
+        ],
+        string="Revenue Stream",
+        index=True,
+    )
     # Generic reference to any originating document (claim, withdrawal request, ...).
     source_ref = fields.Reference(
         selection=[

@@ -1,4 +1,4 @@
-from odoo import fields, models
+from odoo import api, fields, models
 
 
 class AlkAdCampaign(models.Model):
@@ -78,3 +78,52 @@ class AlkAdCampaign(models.Model):
         default=lambda self: self.env.company,
         index=True,
     )
+
+    # ------------------------------------------------------------------
+    # Ad serving (decoupled from service execution)
+    # ------------------------------------------------------------------
+    @api.model
+    def serve_for(self, partner, placement, limit=5):
+        """Return targeted, currently-running banners for a beneficiary.
+
+        Targeting reuses the distribution engine's safe predicate evaluator, so
+        ad targeting never touches the redemption flow. Impressions are counted
+        on serve.
+        """
+        now = fields.Datetime.now()
+        candidates = self.search(
+            [
+                ("state", "=", "running"),
+                ("placement", "=", placement),
+                "|", ("date_start", "=", False), ("date_start", "<=", now),
+                "|", ("date_end", "=", False), ("date_end", ">=", now),
+            ],
+            order="priority desc, sequence",
+        )
+        engine = self.env["alkathiry.distribution.engine"]
+        ctx = engine.build_beneficiary_context(partner)
+        served = self.browse()
+        for ad in candidates:
+            if engine.evaluate_predicate(ad.targeting_expression, ctx):
+                served |= ad
+                if len(served) >= limit:
+                    break
+        served.sudo()._bump("impressions")
+        return [
+            {
+                "id": ad.id,
+                "title": ad.name,
+                "type": ad.ad_type,
+                "media_url": ad.media_url or "",
+                "click_url": ad.click_url or "",
+            }
+            for ad in served
+        ]
+
+    def _bump(self, field, amount=1):
+        for ad in self:
+            ad[field] = (ad[field] or 0) + amount
+
+    def register_click(self):
+        self.sudo()._bump("clicks")
+        return True

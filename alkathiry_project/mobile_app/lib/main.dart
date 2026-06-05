@@ -157,6 +157,29 @@ class BeneficiaryHome extends StatelessWidget {
           if (!snap.hasData) return const Center(child: CircularProgressIndicator());
           final services = snap.data!;
           return Column(children: [
+            // Targeted ad banners — served independently of service execution.
+            FutureBuilder<List<dynamic>>(
+              future: api.ads('beneficiary_home'),
+              builder: (context, adSnap) {
+                final ads = adSnap.data ?? [];
+                if (ads.isEmpty) return const SizedBox.shrink();
+                return SizedBox(
+                  height: 90,
+                  child: ListView(
+                    scrollDirection: Axis.horizontal,
+                    children: ads
+                        .map((a) => Card(
+                              color: Colors.amber.shade100,
+                              child: Padding(
+                                padding: const EdgeInsets.all(12),
+                                child: Center(child: Text(a['title']?.toString() ?? '')),
+                              ),
+                            ))
+                        .toList(),
+                  ),
+                );
+              },
+            ),
             Expanded(
               child: ListView(
                 children: services

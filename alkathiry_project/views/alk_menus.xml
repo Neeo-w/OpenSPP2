@@ -26,6 +26,33 @@
         sequence="30"
     />
 
+    <!-- Finance -->
+    <menuitem id="menu_alk_finance" name="Finance" parent="menu_alk_root" sequence="40" />
+    <menuitem
+        id="menu_alk_finance_reports"
+        name="Financial Statements"
+        parent="menu_alk_finance"
+        action="action_alk_financial_report"
+        sequence="10"
+    />
+    <menuitem
+        id="menu_alk_finance_ledger"
+        name="Ledger"
+        parent="menu_alk_finance"
+        action="action_alk_transaction"
+        sequence="20"
+    />
+
+    <!-- Marketing -->
+    <menuitem id="menu_alk_marketing" name="Marketing" parent="menu_alk_root" sequence="50" />
+    <menuitem
+        id="menu_alk_marketing_ads"
+        name="Ad Campaigns"
+        parent="menu_alk_marketing"
+        action="action_alk_ad_campaign"
+        sequence="10"
+    />
+
     <!-- Configuration -->
     <menuitem id="menu_alk_config" name="Configuration" parent="menu_alk_root" sequence="90" />
     <menuitem
