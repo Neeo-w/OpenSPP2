@@ -1,42 +1,13 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <odoo noupdate="1">
     <!--
-        Seed terminology for the Alkathiry profile. All vocabularies are
-        is_system=False so the Central Committee can add/rename/deactivate codes
-        from the Vocabulary UI without code changes (Absolute Dynamism).
-    -->
+        Seed terminology for the NEW Alkathiry dimensions only. Marital status,
+        occupation and income already exist in spp_registry (civil_status_id /
+        occupation_id / income) and are NOT redefined here.
 
-    <!-- ============ Marital Status ============ -->
-    <record id="vocab_marital_status" model="spp.vocabulary">
-        <field name="name">Marital Status</field>
-        <field name="namespace_uri">urn:alkathiry:vocab:marital-status</field>
-        <field name="is_system">False</field>
-        <field name="domain">core</field>
-    </record>
-    <record id="marital_single" model="spp.vocabulary.code">
-        <field name="vocabulary_id" ref="vocab_marital_status" />
-        <field name="code">single</field>
-        <field name="display">Single</field>
-        <field name="sequence">10</field>
-    </record>
-    <record id="marital_married" model="spp.vocabulary.code">
-        <field name="vocabulary_id" ref="vocab_marital_status" />
-        <field name="code">married</field>
-        <field name="display">Married</field>
-        <field name="sequence">20</field>
-    </record>
-    <record id="marital_divorced" model="spp.vocabulary.code">
-        <field name="vocabulary_id" ref="vocab_marital_status" />
-        <field name="code">divorced</field>
-        <field name="display">Divorced</field>
-        <field name="sequence">30</field>
-    </record>
-    <record id="marital_widowed" model="spp.vocabulary.code">
-        <field name="vocabulary_id" ref="vocab_marital_status" />
-        <field name="code">widowed</field>
-        <field name="display">Widowed</field>
-        <field name="sequence">40</field>
-    </record>
+        All vocabularies are is_system=False so the Central Committee can
+        add/rename/deactivate codes from the Vocabulary UI without code changes.
+    -->
 
     <!-- ============ Blood Type ============ -->
     <record id="vocab_blood_type" model="spp.vocabulary">
@@ -78,6 +49,30 @@
         <field name="code">o_neg</field><field name="display">O-</field><field name="sequence">80</field>
     </record>
 
+    <!-- ============ Health Status (general; disability handled by its own module) ============ -->
+    <record id="vocab_health_status" model="spp.vocabulary">
+        <field name="name">Health Status</field>
+        <field name="namespace_uri">urn:alkathiry:vocab:health-status</field>
+        <field name="is_system">False</field>
+        <field name="domain">core</field>
+    </record>
+    <record id="health_healthy" model="spp.vocabulary.code">
+        <field name="vocabulary_id" ref="vocab_health_status" />
+        <field name="code">healthy</field><field name="display">Healthy</field><field name="sequence">10</field>
+    </record>
+    <record id="health_chronic" model="spp.vocabulary.code">
+        <field name="vocabulary_id" ref="vocab_health_status" />
+        <field name="code">chronic</field><field name="display">Chronic Illness</field><field name="sequence">20</field>
+    </record>
+    <record id="health_serious" model="spp.vocabulary.code">
+        <field name="vocabulary_id" ref="vocab_health_status" />
+        <field name="code">serious</field><field name="display">Serious Illness</field><field name="sequence">30</field>
+    </record>
+    <record id="health_under_treatment" model="spp.vocabulary.code">
+        <field name="vocabulary_id" ref="vocab_health_status" />
+        <field name="code">under_treatment</field><field name="display">Under Treatment</field><field name="sequence">40</field>
+    </record>
+
     <!-- ============ Education Level ============ -->
     <record id="vocab_education_level" model="spp.vocabulary">
         <field name="name">Education Level</field>
@@ -110,7 +105,7 @@
         <field name="code">postgraduate</field><field name="display">Postgraduate</field><field name="sequence">60</field>
     </record>
 
-    <!-- ============ Employment Status ============ -->
+    <!-- ============ Employment Status (distinct from occupation_id/ISCO) ============ -->
     <record id="vocab_employment_status" model="spp.vocabulary">
         <field name="name">Employment Status</field>
         <field name="namespace_uri">urn:alkathiry:vocab:employment-status</field>
@@ -142,31 +137,7 @@
         <field name="code">unable</field><field name="display">Unable to Work</field><field name="sequence">60</field>
     </record>
 
-    <!-- ============ Health Status ============ -->
-    <record id="vocab_health_status" model="spp.vocabulary">
-        <field name="name">Health Status</field>
-        <field name="namespace_uri">urn:alkathiry:vocab:health-status</field>
-        <field name="is_system">False</field>
-        <field name="domain">core</field>
-    </record>
-    <record id="health_healthy" model="spp.vocabulary.code">
-        <field name="vocabulary_id" ref="vocab_health_status" />
-        <field name="code">healthy</field><field name="display">Healthy</field><field name="sequence">10</field>
-    </record>
-    <record id="health_chronic" model="spp.vocabulary.code">
-        <field name="vocabulary_id" ref="vocab_health_status" />
-        <field name="code">chronic</field><field name="display">Chronic Illness</field><field name="sequence">20</field>
-    </record>
-    <record id="health_disabled" model="spp.vocabulary.code">
-        <field name="vocabulary_id" ref="vocab_health_status" />
-        <field name="code">disabled</field><field name="display">Disability</field><field name="sequence">30</field>
-    </record>
-    <record id="health_special" model="spp.vocabulary.code">
-        <field name="vocabulary_id" ref="vocab_health_status" />
-        <field name="code">special_needs</field><field name="display">Special Needs</field><field name="sequence">40</field>
-    </record>
-
-    <!-- ============ Financial Status ============ -->
+    <!-- ============ Financial Status (self-declared bracket; distinct from income) ============ -->
     <record id="vocab_financial_status" model="spp.vocabulary">
         <field name="name">Financial Status</field>
         <field name="namespace_uri">urn:alkathiry:vocab:financial-status</field>
