@@ -161,6 +161,55 @@
         <field name="code">comfortable</field><field name="display">Comfortable</field><field name="sequence">40</field>
     </record>
 
+    <!-- ============ Disease / Medical Condition ============ -->
+    <record id="vocab_disease" model="spp.vocabulary">
+        <field name="name">Disease / Medical Condition</field>
+        <field name="namespace_uri">urn:alkathiry:vocab:disease</field>
+        <field name="is_system">False</field>
+        <field name="domain">core</field>
+        <field name="description">Diseases/medical conditions recorded on the health record (complements the functional disability registry).</field>
+    </record>
+    <record id="disease_diabetes" model="spp.vocabulary.code">
+        <field name="vocabulary_id" ref="vocab_disease" />
+        <field name="code">diabetes</field><field name="display">Diabetes</field><field name="sequence">10</field>
+    </record>
+    <record id="disease_hypertension" model="spp.vocabulary.code">
+        <field name="vocabulary_id" ref="vocab_disease" />
+        <field name="code">hypertension</field><field name="display">Hypertension</field><field name="sequence">20</field>
+    </record>
+    <record id="disease_heart" model="spp.vocabulary.code">
+        <field name="vocabulary_id" ref="vocab_disease" />
+        <field name="code">heart_disease</field><field name="display">Heart Disease</field><field name="sequence">30</field>
+    </record>
+    <record id="disease_asthma" model="spp.vocabulary.code">
+        <field name="vocabulary_id" ref="vocab_disease" />
+        <field name="code">asthma</field><field name="display">Asthma / Respiratory</field><field name="sequence">40</field>
+    </record>
+    <record id="disease_kidney" model="spp.vocabulary.code">
+        <field name="vocabulary_id" ref="vocab_disease" />
+        <field name="code">kidney_disease</field><field name="display">Kidney Disease</field><field name="sequence">50</field>
+    </record>
+    <record id="disease_cancer" model="spp.vocabulary.code">
+        <field name="vocabulary_id" ref="vocab_disease" />
+        <field name="code">cancer</field><field name="display">Cancer</field><field name="sequence">60</field>
+    </record>
+    <record id="disease_hepatitis" model="spp.vocabulary.code">
+        <field name="vocabulary_id" ref="vocab_disease" />
+        <field name="code">hepatitis</field><field name="display">Hepatitis</field><field name="sequence">70</field>
+    </record>
+    <record id="disease_thalassemia" model="spp.vocabulary.code">
+        <field name="vocabulary_id" ref="vocab_disease" />
+        <field name="code">thalassemia</field><field name="display">Thalassemia / Blood Disorder</field><field name="sequence">80</field>
+    </record>
+    <record id="disease_mental" model="spp.vocabulary.code">
+        <field name="vocabulary_id" ref="vocab_disease" />
+        <field name="code">mental_health</field><field name="display">Mental Health Condition</field><field name="sequence">90</field>
+    </record>
+    <record id="disease_other" model="spp.vocabulary.code">
+        <field name="vocabulary_id" ref="vocab_disease" />
+        <field name="code">other</field><field name="display">Other</field><field name="sequence">100</field>
+    </record>
+
     <!-- ============ Position (sheikh / aqil / committee) ============ -->
     <record id="vocab_position" model="spp.vocabulary">
         <field name="name">Tribal / Administrative Position</field>

@@ -4,14 +4,10 @@ from odoo import api, fields, models
 class ResPartner(models.Model):
     """Alkathiry community-profile extension on the registrant.
 
-    IMPORTANT — no duplication: the following already exist in ``spp_registry``
-    and are intentionally NOT re-added here (reused as-is):
-        * civil_status_id  (marital status, UN marital-status vocabulary)
-        * occupation_id    (ISCO-08 occupation)
-        * income           (Float)
-        * address          (Text)
-    This module only adds dimensions that have no existing equivalent, all
-    vocabulary-driven so the Central Committee edits the option lists from the UI.
+    IMPORTANT — no duplication: civil_status_id, occupation_id, income and address
+    already exist in ``spp_registry`` and are reused as-is. Disability (functional,
+    Washington-Group) is handled by ``spp_disability_registry``; this module adds
+    a separate *medical conditions / diseases* record with proof attachments.
     """
 
     _inherit = "res.partner"
@@ -43,10 +39,8 @@ class ResPartner(models.Model):
     )
     alk_health_status_id = fields.Many2one(
         "spp.vocabulary.code",
-        string="Health Status",
+        string="General Health Status",
         domain="[('namespace_uri', '=', 'urn:alkathiry:vocab:health-status')]",
-        help="General self-declared health condition. Formal disability is handled "
-        "separately by spp_disability_registry and is not duplicated here.",
     )
     alk_education_level_id = fields.Many2one(
         "spp.vocabulary.code",
@@ -57,16 +51,50 @@ class ResPartner(models.Model):
         "spp.vocabulary.code",
         string="Employment Status",
         domain="[('namespace_uri', '=', 'urn:alkathiry:vocab:employment-status')]",
-        help="Working status (employed/unemployed/student...). Distinct from "
-        "occupation_id, which is the ISCO-08 job title.",
     )
     alk_financial_status_id = fields.Many2one(
         "spp.vocabulary.code",
         string="Financial Status",
         domain="[('namespace_uri', '=', 'urn:alkathiry:vocab:financial-status')]",
-        help="Self-declared economic bracket. Distinct from the numeric income "
-        "field and from any computed proxy-means score.",
     )
+
+    # --- Medical conditions / diseases (with proof attachments) ---
+    alk_health_condition_ids = fields.One2many(
+        "alkathiry.health.condition",
+        "partner_id",
+        string="Medical Conditions",
+    )
+    alk_health_condition_count = fields.Integer(
+        compute="_compute_alk_health_condition_count",
+    )
+
+    # --- Responsible local official(s), resolved by the smallest residential area ---
+    alk_responsible_user_ids = fields.Many2many(
+        "res.users",
+        string="Responsible Officials",
+        compute="_compute_alk_responsible_users",
+        help="Local users (e.g. the neighborhood Aqil) whose assigned area covers "
+        "this individual's residential area (area_id). Resolved directly from the "
+        "smallest residential unit, independent of the verification-chain length.",
+    )
+
+    @api.depends("alk_health_condition_ids")
+    def _compute_alk_health_condition_count(self):
+        for rec in self:
+            rec.alk_health_condition_count = len(rec.alk_health_condition_ids)
+
+    @api.depends("area_id")
+    def _compute_alk_responsible_users(self):
+        users_model = self.env["res.users"]
+        for rec in self:
+            if rec.area_id:
+                # Users whose assigned area (center_area_ids) is an ancestor or the
+                # area itself => they cover this citizen's residential area.
+                rec.alk_responsible_user_ids = users_model.search(
+                    [("center_area_ids", "parent_of", rec.area_id.id)]
+                )
+            else:
+                rec.alk_responsible_user_ids = users_model.browse()
 
     @api.model_create_multi
     def create(self, vals_list):

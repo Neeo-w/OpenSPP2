@@ -5,30 +5,29 @@
         <field name="model">res.partner</field>
         <field name="inherit_id" ref="spp_registry.view_individuals_form" />
         <field name="arch" type="xml">
-            <!-- Dedicated page with ONLY the new Alkathiry dimensions.
-                 Existing fields (civil_status_id, occupation_id, income, address,
-                 area_id) are already placed by spp_registry / spp_area and are not
-                 repeated here to avoid duplicate-field errors. -->
-            <xpath expr="//notebook[@name='individual_detail']" position="inside">
-                <page string="Alkathiry Profile" name="alk_profile">
-                    <group>
-                        <group string="Community Identity" name="alk_identity">
-                            <field name="alk_citizen_no" />
-                            <field name="alk_tribe_id" />
-                        </group>
-                        <group string="Demographics &amp; Health" name="alk_health">
-                            <field name="alk_blood_type_id" />
-                            <field name="alk_health_status_id" />
-                        </group>
-                        <group string="Education &amp; Employment" name="alk_edu_work">
-                            <field name="alk_education_level_id" />
-                            <field name="alk_employment_status_id" />
-                        </group>
-                        <group string="Economic Status" name="alk_economic">
-                            <field name="alk_financial_status_id" />
-                        </group>
+            <!-- Append into the EXISTING Profile page (no new tab). Existing fields
+                 (civil_status_id, occupation_id, income, address, area_id) keep their
+                 native placement and are not repeated. -->
+            <xpath expr="//page[@name='profile']" position="inside">
+                <separator string="Alkathiry — Community Profile" />
+                <group name="alk_profile_section" col="2">
+                    <group string="Community Identity">
+                        <field name="alk_citizen_no" />
+                        <field name="alk_tribe_id" />
+                        <field name="alk_responsible_user_ids" widget="many2many_tags" />
                     </group>
-                </page>
+                    <group string="Demographics">
+                        <field name="alk_blood_type_id" />
+                        <field name="alk_education_level_id" />
+                        <field name="alk_employment_status_id" />
+                        <field name="alk_financial_status_id" />
+                    </group>
+                </group>
+                <separator string="Health Record" />
+                <group name="alk_health_section">
+                    <field name="alk_health_status_id" />
+                </group>
+                <field name="alk_health_condition_ids" nolabel="1" />
             </xpath>
         </field>
     </record>

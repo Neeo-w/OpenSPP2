@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="view_alk_health_condition_list" model="ir.ui.view">
+        <field name="name">alkathiry.health.condition.list</field>
+        <field name="model">alkathiry.health.condition</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="disease_id" />
+                <field name="diagnosis_date" />
+                <field name="status" />
+                <field name="severity" />
+                <field name="attachment_count" string="Docs" />
+            </list>
+        </field>
+    </record>
+
+    <record id="view_alk_health_condition_form" model="ir.ui.view">
+        <field name="name">alkathiry.health.condition.form</field>
+        <field name="model">alkathiry.health.condition</field>
+        <field name="arch" type="xml">
+            <form string="Medical Condition">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="disease_id" />
+                            <field name="diagnosis_date" />
+                        </group>
+                        <group>
+                            <field name="status" />
+                            <field name="severity" />
+                        </group>
+                    </group>
+                    <field name="notes" placeholder="Clinical notes..." />
+                    <separator string="Medical Proof Documents" />
+                    <field name="attachment_ids" widget="many2many_binary" />
+                </sheet>
+            </form>
+        </field>
+    </record>
+</odoo>
