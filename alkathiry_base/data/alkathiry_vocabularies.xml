@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo noupdate="1">
+    <!--
+        Seed terminology for the Alkathiry profile. All vocabularies are
+        is_system=False so the Central Committee can add/rename/deactivate codes
+        from the Vocabulary UI without code changes (Absolute Dynamism).
+    -->
+
+    <!-- ============ Marital Status ============ -->
+    <record id="vocab_marital_status" model="spp.vocabulary">
+        <field name="name">Marital Status</field>
+        <field name="namespace_uri">urn:alkathiry:vocab:marital-status</field>
+        <field name="is_system">False</field>
+        <field name="domain">core</field>
+    </record>
+    <record id="marital_single" model="spp.vocabulary.code">
+        <field name="vocabulary_id" ref="vocab_marital_status" />
+        <field name="code">single</field>
+        <field name="display">Single</field>
+        <field name="sequence">10</field>
+    </record>
+    <record id="marital_married" model="spp.vocabulary.code">
+        <field name="vocabulary_id" ref="vocab_marital_status" />
+        <field name="code">married</field>
+        <field name="display">Married</field>
+        <field name="sequence">20</field>
+    </record>
+    <record id="marital_divorced" model="spp.vocabulary.code">
+        <field name="vocabulary_id" ref="vocab_marital_status" />
+        <field name="code">divorced</field>
+        <field name="display">Divorced</field>
+        <field name="sequence">30</field>
+    </record>
+    <record id="marital_widowed" model="spp.vocabulary.code">
+        <field name="vocabulary_id" ref="vocab_marital_status" />
+        <field name="code">widowed</field>
+        <field name="display">Widowed</field>
+        <field name="sequence">40</field>
+    </record>
+
+    <!-- ============ Blood Type ============ -->
+    <record id="vocab_blood_type" model="spp.vocabulary">
+        <field name="name">Blood Type</field>
+        <field name="namespace_uri">urn:alkathiry:vocab:blood-type</field>
+        <field name="is_system">False</field>
+        <field name="domain">core</field>
+    </record>
+    <record id="blood_a_pos" model="spp.vocabulary.code">
+        <field name="vocabulary_id" ref="vocab_blood_type" />
+        <field name="code">a_pos</field><field name="display">A+</field><field name="sequence">10</field>
+    </record>
+    <record id="blood_a_neg" model="spp.vocabulary.code">
+        <field name="vocabulary_id" ref="vocab_blood_type" />
+        <field name="code">a_neg</field><field name="display">A-</field><field name="sequence">20</field>
+    </record>
+    <record id="blood_b_pos" model="spp.vocabulary.code">
+        <field name="vocabulary_id" ref="vocab_blood_type" />
+        <field name="code">b_pos</field><field name="display">B+</field><field name="sequence">30</field>
+    </record>
+    <record id="blood_b_neg" model="spp.vocabulary.code">
+        <field name="vocabulary_id" ref="vocab_blood_type" />
+        <field name="code">b_neg</field><field name="display">B-</field><field name="sequence">40</field>
+    </record>
+    <record id="blood_ab_pos" model="spp.vocabulary.code">
+        <field name="vocabulary_id" ref="vocab_blood_type" />
+        <field name="code">ab_pos</field><field name="display">AB+</field><field name="sequence">50</field>
+    </record>
+    <record id="blood_ab_neg" model="spp.vocabulary.code">
+        <field name="vocabulary_id" ref="vocab_blood_type" />
+        <field name="code">ab_neg</field><field name="display">AB-</field><field name="sequence">60</field>
+    </record>
+    <record id="blood_o_pos" model="spp.vocabulary.code">
+        <field name="vocabulary_id" ref="vocab_blood_type" />
+        <field name="code">o_pos</field><field name="display">O+</field><field name="sequence">70</field>
+    </record>
+    <record id="blood_o_neg" model="spp.vocabulary.code">
+        <field name="vocabulary_id" ref="vocab_blood_type" />
+        <field name="code">o_neg</field><field name="display">O-</field><field name="sequence">80</field>
+    </record>
+
+    <!-- ============ Education Level ============ -->
+    <record id="vocab_education_level" model="spp.vocabulary">
+        <field name="name">Education Level</field>
+        <field name="namespace_uri">urn:alkathiry:vocab:education-level</field>
+        <field name="is_system">False</field>
+        <field name="domain">core</field>
+    </record>
+    <record id="edu_none" model="spp.vocabulary.code">
+        <field name="vocabulary_id" ref="vocab_education_level" />
+        <field name="code">none</field><field name="display">No Formal Education</field><field name="sequence">10</field>
+    </record>
+    <record id="edu_primary" model="spp.vocabulary.code">
+        <field name="vocabulary_id" ref="vocab_education_level" />
+        <field name="code">primary</field><field name="display">Primary</field><field name="sequence">20</field>
+    </record>
+    <record id="edu_secondary" model="spp.vocabulary.code">
+        <field name="vocabulary_id" ref="vocab_education_level" />
+        <field name="code">secondary</field><field name="display">Secondary</field><field name="sequence">30</field>
+    </record>
+    <record id="edu_diploma" model="spp.vocabulary.code">
+        <field name="vocabulary_id" ref="vocab_education_level" />
+        <field name="code">diploma</field><field name="display">Diploma</field><field name="sequence">40</field>
+    </record>
+    <record id="edu_bachelor" model="spp.vocabulary.code">
+        <field name="vocabulary_id" ref="vocab_education_level" />
+        <field name="code">bachelor</field><field name="display">Bachelor</field><field name="sequence">50</field>
+    </record>
+    <record id="edu_postgrad" model="spp.vocabulary.code">
+        <field name="vocabulary_id" ref="vocab_education_level" />
+        <field name="code">postgraduate</field><field name="display">Postgraduate</field><field name="sequence">60</field>
+    </record>
+
+    <!-- ============ Employment Status ============ -->
+    <record id="vocab_employment_status" model="spp.vocabulary">
+        <field name="name">Employment Status</field>
+        <field name="namespace_uri">urn:alkathiry:vocab:employment-status</field>
+        <field name="is_system">False</field>
+        <field name="domain">core</field>
+    </record>
+    <record id="emp_employed" model="spp.vocabulary.code">
+        <field name="vocabulary_id" ref="vocab_employment_status" />
+        <field name="code">employed</field><field name="display">Employed</field><field name="sequence">10</field>
+    </record>
+    <record id="emp_self" model="spp.vocabulary.code">
+        <field name="vocabulary_id" ref="vocab_employment_status" />
+        <field name="code">self_employed</field><field name="display">Self-employed</field><field name="sequence">20</field>
+    </record>
+    <record id="emp_unemployed" model="spp.vocabulary.code">
+        <field name="vocabulary_id" ref="vocab_employment_status" />
+        <field name="code">unemployed</field><field name="display">Unemployed</field><field name="sequence">30</field>
+    </record>
+    <record id="emp_student" model="spp.vocabulary.code">
+        <field name="vocabulary_id" ref="vocab_employment_status" />
+        <field name="code">student</field><field name="display">Student</field><field name="sequence">40</field>
+    </record>
+    <record id="emp_retired" model="spp.vocabulary.code">
+        <field name="vocabulary_id" ref="vocab_employment_status" />
+        <field name="code">retired</field><field name="display">Retired</field><field name="sequence">50</field>
+    </record>
+    <record id="emp_unable" model="spp.vocabulary.code">
+        <field name="vocabulary_id" ref="vocab_employment_status" />
+        <field name="code">unable</field><field name="display">Unable to Work</field><field name="sequence">60</field>
+    </record>
+
+    <!-- ============ Health Status ============ -->
+    <record id="vocab_health_status" model="spp.vocabulary">
+        <field name="name">Health Status</field>
+        <field name="namespace_uri">urn:alkathiry:vocab:health-status</field>
+        <field name="is_system">False</field>
+        <field name="domain">core</field>
+    </record>
+    <record id="health_healthy" model="spp.vocabulary.code">
+        <field name="vocabulary_id" ref="vocab_health_status" />
+        <field name="code">healthy</field><field name="display">Healthy</field><field name="sequence">10</field>
+    </record>
+    <record id="health_chronic" model="spp.vocabulary.code">
+        <field name="vocabulary_id" ref="vocab_health_status" />
+        <field name="code">chronic</field><field name="display">Chronic Illness</field><field name="sequence">20</field>
+    </record>
+    <record id="health_disabled" model="spp.vocabulary.code">
+        <field name="vocabulary_id" ref="vocab_health_status" />
+        <field name="code">disabled</field><field name="display">Disability</field><field name="sequence">30</field>
+    </record>
+    <record id="health_special" model="spp.vocabulary.code">
+        <field name="vocabulary_id" ref="vocab_health_status" />
+        <field name="code">special_needs</field><field name="display">Special Needs</field><field name="sequence">40</field>
+    </record>
+
+    <!-- ============ Financial Status ============ -->
+    <record id="vocab_financial_status" model="spp.vocabulary">
+        <field name="name">Financial Status</field>
+        <field name="namespace_uri">urn:alkathiry:vocab:financial-status</field>
+        <field name="is_system">False</field>
+        <field name="domain">core</field>
+    </record>
+    <record id="fin_very_poor" model="spp.vocabulary.code">
+        <field name="vocabulary_id" ref="vocab_financial_status" />
+        <field name="code">very_poor</field><field name="display">Very Poor</field><field name="sequence">10</field>
+    </record>
+    <record id="fin_poor" model="spp.vocabulary.code">
+        <field name="vocabulary_id" ref="vocab_financial_status" />
+        <field name="code">poor</field><field name="display">Poor</field><field name="sequence">20</field>
+    </record>
+    <record id="fin_middle" model="spp.vocabulary.code">
+        <field name="vocabulary_id" ref="vocab_financial_status" />
+        <field name="code">middle</field><field name="display">Middle Income</field><field name="sequence">30</field>
+    </record>
+    <record id="fin_comfortable" model="spp.vocabulary.code">
+        <field name="vocabulary_id" ref="vocab_financial_status" />
+        <field name="code">comfortable</field><field name="display">Comfortable</field><field name="sequence">40</field>
+    </record>
+
+    <!-- ============ Position (sheikh / aqil / committee) ============ -->
+    <record id="vocab_position" model="spp.vocabulary">
+        <field name="name">Tribal / Administrative Position</field>
+        <field name="namespace_uri">urn:alkathiry:vocab:position</field>
+        <field name="is_system">False</field>
+        <field name="domain">core</field>
+        <field name="description">Positions used to assign verifier roles by tier and scope (aqil, sheikh, committee...).</field>
+    </record>
+    <record id="pos_aqil" model="spp.vocabulary.code">
+        <field name="vocabulary_id" ref="vocab_position" />
+        <field name="code">aqil</field><field name="display">Aqil (Neighborhood)</field><field name="sequence">10</field>
+    </record>
+    <record id="pos_adl" model="spp.vocabulary.code">
+        <field name="vocabulary_id" ref="vocab_position" />
+        <field name="code">adl</field><field name="display">Adl (Notary)</field><field name="sequence">20</field>
+    </record>
+    <record id="pos_sheikh_area" model="spp.vocabulary.code">
+        <field name="vocabulary_id" ref="vocab_position" />
+        <field name="code">sheikh_area</field><field name="display">Area Sheikh</field><field name="sequence">30</field>
+    </record>
+    <record id="pos_sheikh_clan" model="spp.vocabulary.code">
+        <field name="vocabulary_id" ref="vocab_position" />
+        <field name="code">sheikh_clan</field><field name="display">Clan Sheikh</field><field name="sequence">40</field>
+    </record>
+    <record id="pos_sheikh_tribe" model="spp.vocabulary.code">
+        <field name="vocabulary_id" ref="vocab_position" />
+        <field name="code">sheikh_tribe</field><field name="display">Tribe Sheikh</field><field name="sequence">50</field>
+    </record>
+    <record id="pos_sheikh_sheikhs" model="spp.vocabulary.code">
+        <field name="vocabulary_id" ref="vocab_position" />
+        <field name="code">sheikh_sheikhs</field><field name="display">Sheikh of Sheikhs</field><field name="sequence">60</field>
+    </record>
+    <record id="pos_committee" model="spp.vocabulary.code">
+        <field name="vocabulary_id" ref="vocab_position" />
+        <field name="code">committee_member</field><field name="display">Committee Member</field><field name="sequence">70</field>
+    </record>
+    <record id="pos_secretary" model="spp.vocabulary.code">
+        <field name="vocabulary_id" ref="vocab_position" />
+        <field name="code">secretary_general</field><field name="display">Secretary General</field><field name="sequence">80</field>
+    </record>
+</odoo>

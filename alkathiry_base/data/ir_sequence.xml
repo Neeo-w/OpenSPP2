@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo noupdate="1">
+    <record id="seq_alk_citizen" model="ir.sequence">
+        <field name="name">Alkathiry Citizen Number</field>
+        <field name="code">alkathiry.citizen</field>
+        <field name="implementation">no_gap</field>
+        <field name="padding">7</field>
+        <field name="prefix">KTH-</field>
+        <field name="company_id" eval="False" />
+    </record>
+</odoo>

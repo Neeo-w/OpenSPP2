@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="view_individuals_form_alk" model="ir.ui.view">
+        <field name="name">alkathiry.individual.form</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="spp_registry.view_individuals_form" />
+        <field name="arch" type="xml">
+            <!-- Add a dedicated profile page to the individual notebook.
+                 area_id (region link) is already added by spp_area, so it is not
+                 repeated here. -->
+            <xpath expr="//notebook[@name='individual_detail']" position="inside">
+                <page string="Alkathiry Profile" name="alk_profile">
+                    <group>
+                        <group string="Identity &amp; Hierarchy">
+                            <field name="alk_citizen_no" />
+                            <field name="alk_tribe_id" />
+                            <field name="alk_marital_status_id" />
+                            <field name="alk_blood_type_id" />
+                        </group>
+                        <group string="Socio-economic">
+                            <field name="alk_education_level_id" />
+                            <field name="alk_employment_status_id" />
+                            <field name="alk_occupation" />
+                            <field name="alk_monthly_income" />
+                            <field name="alk_financial_status_id" />
+                            <field name="alk_health_status_id" />
+                        </group>
+                    </group>
+                    <group string="Address &amp; Notes">
+                        <field name="alk_address_detail" />
+                        <field name="alk_additional_info" />
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>
