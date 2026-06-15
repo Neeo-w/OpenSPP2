@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo noupdate="1">
+    <!-- Lineage level names. is_system=False so the committee can rename/add
+         levels (e.g. add 'batn' between tribe and clan) from the Vocabulary UI. -->
+    <record id="vocab_tribe_type" model="spp.vocabulary">
+        <field name="name">Tribe Level / Type</field>
+        <field name="namespace_uri">urn:alkathiry:vocab:tribe-type</field>
+        <field name="is_system">False</field>
+        <field name="domain">core</field>
+        <field name="description">Lineage levels for the tribal tree (grand tribe, tribe, clan, fakheedah, family).</field>
+    </record>
+    <record id="tribe_type_grand" model="spp.vocabulary.code">
+        <field name="vocabulary_id" ref="vocab_tribe_type" />
+        <field name="code">grand_tribe</field><field name="display">Grand Tribe</field><field name="sequence">10</field>
+    </record>
+    <record id="tribe_type_tribe" model="spp.vocabulary.code">
+        <field name="vocabulary_id" ref="vocab_tribe_type" />
+        <field name="code">tribe</field><field name="display">Tribe</field><field name="sequence">20</field>
+    </record>
+    <record id="tribe_type_batn" model="spp.vocabulary.code">
+        <field name="vocabulary_id" ref="vocab_tribe_type" />
+        <field name="code">batn</field><field name="display">Batn (Section)</field><field name="sequence">30</field>
+    </record>
+    <record id="tribe_type_clan" model="spp.vocabulary.code">
+        <field name="vocabulary_id" ref="vocab_tribe_type" />
+        <field name="code">clan</field><field name="display">Clan</field><field name="sequence">40</field>
+    </record>
+    <record id="tribe_type_fakheedah" model="spp.vocabulary.code">
+        <field name="vocabulary_id" ref="vocab_tribe_type" />
+        <field name="code">fakheedah</field><field name="display">Fakheedah</field><field name="sequence">50</field>
+    </record>
+    <record id="tribe_type_family" model="spp.vocabulary.code">
+        <field name="vocabulary_id" ref="vocab_tribe_type" />
+        <field name="code">family</field><field name="display">Family</field><field name="sequence">60</field>
+    </record>
+</odoo>

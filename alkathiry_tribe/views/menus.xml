@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <!-- Reuse the Alkathiry root created in alkathiry_base. -->
+    <menuitem
+        id="menu_alk_tribe_lineage"
+        name="Lineage Tree"
+        parent="alkathiry_base.menu_alk_root"
+        action="action_alk_tribe"
+        sequence="20"
+    />
+    <menuitem
+        id="menu_alk_tribe_positions"
+        name="Tribal Positions"
+        parent="alkathiry_base.menu_alk_root"
+        action="action_alk_tribe_position"
+        sequence="30"
+    />
+</odoo>

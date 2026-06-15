@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="view_individuals_form_alk_tribe" model="ir.ui.view">
+        <field name="name">alkathiry.individual.form.tribe</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="alkathiry_base.view_individuals_form_alk" />
+        <field name="arch" type="xml">
+            <!-- Place the clean lineage-node selector + resolved representatives
+                 next to the tribal pointer in the existing profile section. -->
+            <xpath expr="//field[@name='alk_tribe_id']" position="after">
+                <field name="alk_tribe_node_id" />
+                <field name="alk_representative_ids" widget="many2many_tags" readonly="1" />
+            </xpath>
+        </field>
+    </record>
+</odoo>

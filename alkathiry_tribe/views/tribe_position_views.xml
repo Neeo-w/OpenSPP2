@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="view_alk_tribe_position_list" model="ir.ui.view">
+        <field name="name">alkathiry.tribe.position.list</field>
+        <field name="model">alkathiry.tribe.position</field>
+        <field name="arch" type="xml">
+            <list string="Tribal Positions" editable="bottom">
+                <field name="tribe_id" />
+                <field name="area_id" />
+                <field name="position_id" />
+                <field name="user_id" />
+                <field name="parent_position_id" optional="hide" />
+                <field name="active" widget="boolean_toggle" />
+            </list>
+        </field>
+    </record>
+
+    <record id="view_alk_tribe_position_form" model="ir.ui.view">
+        <field name="name">alkathiry.tribe.position.form</field>
+        <field name="model">alkathiry.tribe.position</field>
+        <field name="arch" type="xml">
+            <form string="Tribal Position">
+                <sheet>
+                    <group>
+                        <group string="Scope">
+                            <field name="tribe_id" />
+                            <field name="area_id" />
+                        </group>
+                        <group string="Assignment">
+                            <field name="position_id" />
+                            <field name="user_id" />
+                            <field name="parent_position_id" />
+                        </group>
+                        <group string="Validity">
+                            <field name="date_start" />
+                            <field name="date_end" />
+                            <field name="active" />
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_alk_tribe_position_search" model="ir.ui.view">
+        <field name="name">alkathiry.tribe.position.search</field>
+        <field name="model">alkathiry.tribe.position</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="tribe_id" />
+                <field name="area_id" />
+                <field name="position_id" />
+                <field name="user_id" />
+                <group expand="0" string="Group By">
+                    <filter name="g_tribe" string="Tribe" context="{'group_by': 'tribe_id'}" />
+                    <filter name="g_area" string="Area" context="{'group_by': 'area_id'}" />
+                    <filter name="g_position" string="Position" context="{'group_by': 'position_id'}" />
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_alk_tribe_position" model="ir.actions.act_window">
+        <field name="name">Tribal Positions</field>
+        <field name="res_model">alkathiry.tribe.position</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_alk_tribe_position_search" />
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Map officials to tribe + area</p>
+            <p>Assign a position and responsible official to a lineage node within a
+                geographic scope. The same node can have different officials per country.</p>
+        </field>
+    </record>
+</odoo>
