@@ -51,11 +51,10 @@
                 <field name="area_id" />
                 <field name="position_id" />
                 <field name="user_id" />
-                <group expand="0" string="Group By">
-                    <filter name="g_tribe" string="Tribe" context="{'group_by': 'tribe_id'}" />
-                    <filter name="g_area" string="Area" context="{'group_by': 'area_id'}" />
-                    <filter name="g_position" string="Position" context="{'group_by': 'position_id'}" />
-                </group>
+                <separator />
+                <filter name="g_tribe" string="Tribe" context="{'group_by': 'tribe_id'}" />
+                <filter name="g_area" string="Area" context="{'group_by': 'area_id'}" />
+                <filter name="g_position" string="Position" context="{'group_by': 'position_id'}" />
             </search>
         </field>
     </record>

@@ -78,10 +78,9 @@
                 <field name="parent_id" />
                 <field name="tribe_type_id" />
                 <filter name="roots" string="Top-level" domain="[('parent_id', '=', False)]" />
-                <group expand="0" string="Group By">
-                    <filter name="group_type" string="Level" context="{'group_by': 'tribe_type_id'}" />
-                    <filter name="group_parent" string="Parent" context="{'group_by': 'parent_id'}" />
-                </group>
+                <separator />
+                <filter name="group_type" string="Level" context="{'group_by': 'tribe_type_id'}" />
+                <filter name="group_parent" string="Parent" context="{'group_by': 'parent_id'}" />
             </search>
         </field>
     </record>
