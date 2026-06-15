@@ -1,59 +1,100 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <odoo>
-    <!-- Dedicated, structured entry point for building the lineage (tribal) tree,
-         filtered to the lineage group-type levels only. Reuses the correct group
-         form (view_individuals_form) so the Members section + hierarchy behave as
-         in the native Groups screen. -->
-    <record id="view_alk_tribes_list" model="ir.ui.view">
-        <field name="name">alkathiry.tribes.list</field>
-        <field name="model">res.partner</field>
+    <record id="view_alk_tribe_list" model="ir.ui.view">
+        <field name="name">alkathiry.tribe.list</field>
+        <field name="model">alkathiry.tribe</field>
         <field name="arch" type="xml">
-            <list string="Tribal Structure">
-                <field name="name" string="Name" />
-                <field name="group_type_id" string="Level" />
-                <field name="area_id" string="Area" optional="show" />
+            <list string="Lineage">
+                <field name="complete_name" string="Lineage" />
+                <field name="tribe_type_id" string="Level" />
+                <field name="level" />
+                <field name="parent_id" />
+                <field name="member_count" string="Members" />
             </list>
         </field>
     </record>
 
-    <record id="action_alk_tribes" model="ir.actions.act_window">
-        <field name="name">Tribal Structure</field>
-        <field name="type">ir.actions.act_window</field>
-        <field name="res_model">res.partner</field>
-        <field name="view_mode">list,form</field>
-        <field
-            name="domain"
-        >[('is_registrant','=',True),('is_group','=',True),('group_type_id.code','in',['grand_tribe','tribe','clan','neighborhood'])]</field>
-        <field
-            name="context"
-        >{'default_is_registrant': True, 'default_is_group': True}</field>
-        <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">Build the tribal lineage tree</p>
-            <p>Create grand-tribe / tribe / clan / neighborhood nodes and add sub-groups
-                or individuals as members. The lineage tree is independent of geography.</p>
+    <record id="view_alk_tribe_form" model="ir.ui.view">
+        <field name="name">alkathiry.tribe.form</field>
+        <field name="model">alkathiry.tribe</field>
+        <field name="arch" type="xml">
+            <form string="Tribe / Lineage Node">
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button
+                            name="action_view_members"
+                            type="object"
+                            class="oe_stat_button"
+                            icon="fa-users"
+                        >
+                            <field name="member_count" widget="statinfo" string="Members" />
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1><field name="name" placeholder="Tribe / clan / family name" /></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="code" />
+                            <field name="tribe_type_id" />
+                            <field name="parent_id" />
+                            <field name="level" readonly="1" />
+                            <field name="active" />
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Sub-tribes" name="children">
+                            <field name="child_ids">
+                                <list editable="bottom">
+                                    <field name="name" />
+                                    <field name="tribe_type_id" />
+                                    <field name="code" />
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Positions" name="positions">
+                            <field name="position_ids">
+                                <list editable="bottom">
+                                    <field name="position_id" />
+                                    <field name="area_id" />
+                                    <field name="user_id" />
+                                    <field name="parent_position_id" optional="hide" />
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
         </field>
     </record>
 
-    <record id="action_alk_tribes_list_view" model="ir.actions.act_window.view">
-        <field name="sequence" eval="1" />
-        <field name="view_mode">list</field>
-        <field name="view_id" ref="view_alk_tribes_list" />
-        <field name="act_window_id" ref="action_alk_tribes" />
-    </record>
-    <record id="action_alk_tribes_form_view" model="ir.actions.act_window.view">
-        <field name="sequence" eval="2" />
-        <field name="view_mode">form</field>
-        <field name="view_id" ref="spp_registry.view_individuals_form" />
-        <field name="act_window_id" ref="action_alk_tribes" />
+    <record id="view_alk_tribe_search" model="ir.ui.view">
+        <field name="name">alkathiry.tribe.search</field>
+        <field name="model">alkathiry.tribe</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name" />
+                <field name="code" />
+                <field name="parent_id" />
+                <field name="tribe_type_id" />
+                <filter name="roots" string="Top-level" domain="[('parent_id', '=', False)]" />
+                <separator />
+                <filter name="group_type" string="Level" context="{'group_by': 'tribe_type_id'}" />
+                <filter name="group_parent" string="Parent" context="{'group_by': 'parent_id'}" />
+            </search>
+        </field>
     </record>
 
-    <!-- Menu -->
-    <menuitem id="menu_alk_root" name="Alkathiry" sequence="6" />
-    <menuitem
-        id="menu_alk_tribes"
-        name="Tribal Structure"
-        parent="menu_alk_root"
-        action="action_alk_tribes"
-        sequence="10"
-    />
+    <record id="action_alk_tribe" model="ir.actions.act_window">
+        <field name="name">Lineage Tree</field>
+        <field name="res_model">alkathiry.tribe</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_alk_tribe_search" />
+        <field name="context">{'search_default_roots': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Build the tribal lineage tree</p>
+            <p>Create the grand tribe, then add child tribes/clans/families using the
+                Parent field. The lineage is independent of geography.</p>
+        </field>
+    </record>
 </odoo>

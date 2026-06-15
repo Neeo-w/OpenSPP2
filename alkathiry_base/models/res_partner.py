@@ -4,10 +4,10 @@ from odoo import api, fields, models
 class ResPartner(models.Model):
     """Alkathiry community-profile extension on the registrant.
 
-    IMPORTANT — no duplication: civil_status_id, occupation_id, income and address
-    already exist in ``spp_registry`` and are reused as-is. Disability (functional,
-    Washington-Group) is handled by ``spp_disability_registry``; this module adds
-    a separate *medical conditions / diseases* record with proof attachments.
+    No duplication: civil_status_id, occupation_id, income and address already
+    exist in ``spp_registry`` and are reused. Lineage uses the clean
+    ``alkathiry.tribe`` tree (not group membership); the responsible officials are
+    resolved from the positions matrix by intersecting lineage node with area.
     """
 
     _inherit = "res.partner"
@@ -21,17 +21,23 @@ class ResPartner(models.Model):
         help="System-generated unique community number for the individual.",
     )
 
-    # --- Tribal link (convenience pointer; source of truth is spp.group.membership) ---
-    alk_tribe_id = fields.Many2one(
-        "res.partner",
-        string="Tribe / Group",
-        domain="[('is_group', '=', True), ('is_registrant', '=', True)]",
+    # --- Lineage link (clean parent/child/level tree, independent of geography) ---
+    alk_tribe_node_id = fields.Many2one(
+        "alkathiry.tribe",
+        string="Lineage Node",
         index=True,
-        help="Denormalized pointer to the tribal/family group node the individual "
-        "belongs to. The authoritative membership is spp.group.membership.",
+        help="The citizen's node in the tribal lineage tree (e.g. their family or "
+        "fakheedah). Independent of where they currently live.",
+    )
+    alk_representative_ids = fields.Many2many(
+        "res.users",
+        string="Tribal Representatives",
+        compute="_compute_alk_representatives",
+        help="Officials resolved from the positions matrix by intersecting this "
+        "individual's lineage node with their residential area.",
     )
 
-    # --- New demographic / socio-economic dimensions (vocabulary-driven) ---
+    # --- Demographic / socio-economic dimensions (vocabulary-driven) ---
     alk_blood_type_id = fields.Many2one(
         "spp.vocabulary.code",
         string="Blood Type",
@@ -68,33 +74,40 @@ class ResPartner(models.Model):
         compute="_compute_alk_health_condition_count",
     )
 
-    # --- Responsible local official(s), resolved by the smallest residential area ---
-    alk_responsible_user_ids = fields.Many2many(
-        "res.users",
-        string="Responsible Officials",
-        compute="_compute_alk_responsible_users",
-        help="Local users (e.g. the neighborhood Aqil) whose assigned area covers "
-        "this individual's residential area (area_id). Resolved directly from the "
-        "smallest residential unit, independent of the verification-chain length.",
-    )
-
     @api.depends("alk_health_condition_ids")
     def _compute_alk_health_condition_count(self):
         for rec in self:
             rec.alk_health_condition_count = len(rec.alk_health_condition_ids)
 
-    @api.depends("area_id")
-    def _compute_alk_responsible_users(self):
-        users_model = self.env["res.users"]
+    @api.depends("alk_tribe_node_id", "area_id")
+    def _compute_alk_representatives(self):
+        positions_model = self.env["alkathiry.tribe.position"]
         for rec in self:
-            if rec.area_id:
-                # Users whose assigned area (center_area_ids) is an ancestor or the
-                # area itself => they cover this citizen's residential area.
-                rec.alk_responsible_user_ids = users_model.search(
-                    [("center_area_ids", "parent_of", rec.area_id.id)]
+            users = self.env["res.users"].browse()
+            if rec.alk_tribe_node_id:
+                # Positions whose lineage node is this node or an ancestor.
+                positions = positions_model.search(
+                    [
+                        ("tribe_id", "parent_of", rec.alk_tribe_node_id.id),
+                        ("active", "=", True),
+                    ]
                 )
-            else:
-                rec.alk_responsible_user_ids = users_model.browse()
+                positions = positions.filtered(
+                    lambda p, rec=rec: rec._alk_position_covers_area(p)
+                )
+                users = positions.mapped("user_id")
+            rec.alk_representative_ids = users
+
+    def _alk_position_covers_area(self, position):
+        """A position covers the citizen if it has no area scope, or its area is
+        the citizen's residential area or an ancestor of it."""
+        self.ensure_one()
+        if not position.area_id:
+            return True
+        citizen_area = self.area_id
+        if citizen_area and citizen_area.parent_path and position.area_id.parent_path:
+            return citizen_area.parent_path.startswith(position.area_id.parent_path)
+        return False
 
     @api.model_create_multi
     def create(self, vals_list):

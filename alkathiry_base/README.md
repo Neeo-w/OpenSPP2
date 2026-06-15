@@ -1,39 +1,34 @@
-# Alkathiry Base — Registration & Hierarchy Layer
+# Alkathiry Base — Registration, Lineage & Positions
 
-Thin layer over OpenSPP. **Inherits** the existing registry/hierarchy/area/
-vocabulary modules and **adds only what has no existing equivalent**. Audited
-against the codebase to avoid duplicating fields (same name) or concepts
-(same scenario, different name).
+One consolidated thin layer over OpenSPP. Inherits the registry/area/vocabulary/
+disability modules and adds only what is missing, all vocabulary-driven.
 
-## Reused as-is (NOT re-added)
-| Concept | Existing field/module |
-|---|---|
-| Marital status | `civil_status_id` (spp_registry, UN marital-status vocab) |
-| Occupation | `occupation_id` (spp_registry, ISCO-08 vocab) |
-| Income | `income` (spp_registry) |
-| Address | `address` (spp_registry) |
-| Region link | `area_id` (spp_area) |
-| Disability | `spp_disability_registry` (assessments, severity) |
-| Notes | base `res.partner.comment` |
+## Models
+- **`alkathiry.tribe`** — the lineage (nasab) tree: a clean `_parent_store`
+  parent/child/level hierarchy (like `spp.area` is for geography), independent of
+  any country. `tribe_type_id` is a vocabulary (grand tribe / tribe / batn / clan /
+  fakheedah / family). Tribe-to-tribe linking via the **Parent** field.
+- **`alkathiry.tribe.position`** — the positions matrix:
+  `tribe_id × area_id → position_id + responsible user_id (+ parent_position_id)`.
+  The same node can have a different official per country.
+- **`alkathiry.health.condition`** — diseases with proof attachments (complements
+  the functional disability registry).
 
-## What it adds (genuinely new)
-- **Fields on the individual** (`res.partner`): `alk_citizen_no` (generated),
-  `alk_tribe_id` (tribal pointer), `alk_blood_type_id`, `alk_health_status_id`
-  (general, not disability), `alk_education_level_id`, `alk_employment_status_id`
-  (distinct from occupation), `alk_financial_status_id` (bracket, distinct from
-  numeric income).
-- **Vocabularies** (`is_system=False`, admin-editable): blood-type, health-status,
-  education-level, employment-status, financial-status, position.
-- **Tribal hierarchy levels** as codes on the existing `urn:openspp:vocab:group-type`
-  vocabulary with `allow_all_member_type=True` (neighborhood / grand_tribe / tribe /
-  clan).
-- **"Alkathiry Profile" page** on the individual form, ordered into Community
-  Identity · Demographics & Health · Education & Employment · Economic Status.
+## res.partner additions
+`alk_citizen_no` (generated), `alk_tribe_node_id` (→ alkathiry.tribe),
+`alk_representative_ids` (computed: officials resolved from the matrix by
+intersecting the lineage node with the citizen's area), blood type, general health
+status, education level, employment status, financial status, medical conditions.
+Reused as-is: `civil_status_id`, `occupation_id`, `income`, `address`, `area_id`.
 
-## How the hierarchies link (native OpenSPP mechanics)
-- **Region**: `res.partner.area_id` → `spp.area` tree (from `spp_area`).
-- **Tribe/Family**: `spp.group.membership` chains over groups whose `group_type_id`
-  is a tribe-level code (seeded here); `alk_tribe_id` is a convenience pointer.
+## UI
+Registry app → **Tribes & Positions** → *Lineage Tree* + *Positions*. The new
+individual fields are appended into the existing **Profile** tab (no new tab).
+
+## Terminology
+All option lists are `spp.vocabulary.code` (admin-editable): tribe-type, position,
+blood-type, health-status, education-level, employment-status, financial-status,
+disease.
 
 ## Dependencies
-`spp_registry`, `spp_registry_group_hierarchy`, `spp_area`, `spp_vocabulary`. Odoo 19.0.
+`spp_registry`, `spp_area`, `spp_vocabulary`, `spp_disability_registry`. Odoo 19.0.

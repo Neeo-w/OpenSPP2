@@ -13,8 +13,8 @@
                 <group name="alk_profile_section" col="2">
                     <group string="Community Identity">
                         <field name="alk_citizen_no" />
-                        <field name="alk_tribe_id" />
-                        <field name="alk_responsible_user_ids" widget="many2many_tags" />
+                        <field name="alk_tribe_node_id" />
+                        <field name="alk_representative_ids" widget="many2many_tags" readonly="1" />
                     </group>
                     <group string="Demographics">
                         <field name="alk_blood_type_id" />

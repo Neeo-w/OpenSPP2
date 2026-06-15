@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <!-- "Tribes & Positions" lives inside the Registry app (spp_registry root). -->
+    <menuitem
+        id="menu_alk_tribes_root"
+        name="Tribes &amp; Positions"
+        parent="spp_registry.spp_main_menu_root"
+        sequence="20"
+    />
+    <menuitem
+        id="menu_alk_lineage_tree"
+        name="Lineage Tree"
+        parent="menu_alk_tribes_root"
+        action="action_alk_tribe"
+        sequence="10"
+    />
+    <menuitem
+        id="menu_alk_tribe_positions"
+        name="Positions"
+        parent="menu_alk_tribes_root"
+        action="action_alk_tribe_position"
+        sequence="20"
+    />
+</odoo>
