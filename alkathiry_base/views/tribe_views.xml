@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <!-- Dedicated, structured entry point for building the lineage (tribal) tree,
+         filtered to the lineage group-type levels only. Reuses the correct group
+         form (view_individuals_form) so the Members section + hierarchy behave as
+         in the native Groups screen. -->
+    <record id="view_alk_tribes_list" model="ir.ui.view">
+        <field name="name">alkathiry.tribes.list</field>
+        <field name="model">res.partner</field>
+        <field name="arch" type="xml">
+            <list string="Tribal Structure">
+                <field name="name" string="Name" />
+                <field name="group_type_id" string="Level" />
+                <field name="area_id" string="Area" optional="show" />
+            </list>
+        </field>
+    </record>
+
+    <record id="action_alk_tribes" model="ir.actions.act_window">
+        <field name="name">Tribal Structure</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">res.partner</field>
+        <field name="view_mode">list,form</field>
+        <field
+            name="domain"
+        >[('is_registrant','=',True),('is_group','=',True),('group_type_id.code','in',['grand_tribe','tribe','clan','neighborhood'])]</field>
+        <field
+            name="context"
+        >{'default_is_registrant': True, 'default_is_group': True}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Build the tribal lineage tree</p>
+            <p>Create grand-tribe / tribe / clan / neighborhood nodes and add sub-groups
+                or individuals as members. The lineage tree is independent of geography.</p>
+        </field>
+    </record>
+
+    <record id="action_alk_tribes_list_view" model="ir.actions.act_window.view">
+        <field name="sequence" eval="1" />
+        <field name="view_mode">list</field>
+        <field name="view_id" ref="view_alk_tribes_list" />
+        <field name="act_window_id" ref="action_alk_tribes" />
+    </record>
+    <record id="action_alk_tribes_form_view" model="ir.actions.act_window.view">
+        <field name="sequence" eval="2" />
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="spp_registry.view_individuals_form" />
+        <field name="act_window_id" ref="action_alk_tribes" />
+    </record>
+
+    <!-- Menu -->
+    <menuitem id="menu_alk_root" name="Alkathiry" sequence="6" />
+    <menuitem
+        id="menu_alk_tribes"
+        name="Tribal Structure"
+        parent="menu_alk_root"
+        action="action_alk_tribes"
+        sequence="10"
+    />
+</odoo>

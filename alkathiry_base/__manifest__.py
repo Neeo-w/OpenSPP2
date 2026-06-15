@@ -27,6 +27,7 @@
         "data/group_type_tribe_levels.xml",
         "views/health_condition_views.xml",
         "views/individual_views.xml",
+        "views/tribe_views.xml",
     ],
     "installable": True,
     "application": False,
