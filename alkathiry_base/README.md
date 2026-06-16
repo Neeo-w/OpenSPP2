@@ -16,14 +16,21 @@ same dynamic hierarchy `spp.area` uses for geography:
   `urn:openspp:vocab:group-type`), seeded with the tribal levels and flagged
   `allow_all_member_type` so a node can contain sub-groups (group-of-groups).
 
-## Tribal leadership ladders (sheikhs / aqils)
-- **`alkathiry.tribe.position`** is the tribal leadership matrix:
-  `tribe node (group) × track × area_id → position_id + official (+ Reports To)`.
-  - **`track_id`** (`urn:alkathiry:vocab:position-track`: sheikhs / aqils)
-    separates the parallel ladders; a chain never crosses tracks.
-  - `parent_position_id` chains the ladder; constraints enforce same track and
-    that the parent's area covers the child's — so each ladder is independent
-    per country (Al-Kathir sheikhs in Yemen vs in Saudi Arabia).
+## Generic leadership ladders + org chart (one engine, the name changes)
+- **`alkathiry.tribe.position`** is ONE engine for every top-down ladder —
+  tribes, unions, committees, organizations. A node is a `position_id` (title)
+  held by a **person** (`partner_id`), scoped to a `area_id` (country /
+  governorate / city), reporting to `parent_position_id`. The body is optional:
+  `tribe_id` (a tribe group) or `organization_id` (a union/committee/org).
+  - **`track_id`** (`urn:alkathiry:vocab:position-track`: sheikhs / aqils / union /
+    committee / organization) is the only thing that changes between ladders.
+  - `_parent_store` + the **hierarchy (org-chart) view** render it top-down like
+    Odoo HR's org chart (depends on `web_hierarchy`).
+  - Constraints: a chain never crosses tracks, and a parent's place must cover
+    the child's — so each ladder is independent per country.
+  - **Clone to country** (`alkathiry.position.clone`): copy a ladder root + its
+    whole subtree to another country, structure only (holders cleared), so the
+    Al-Kathir sheikhs ladder in Yemen can be replicated for Saudi Arabia.
 
 ## Unions & organizations (dedicated bodies — NOT registry groups)
 Unions/syndicates and organizations are their own entity, with their own clean
@@ -67,4 +74,4 @@ financial-status, disease.
 
 ## Dependencies
 `spp_registry`, `spp_registry_group_hierarchy`, `spp_area`, `spp_vocabulary`,
-`spp_disability_registry`. Odoo 19.0.
+`spp_disability_registry`, `web_hierarchy` (for the org-chart view). Odoo 19.0.

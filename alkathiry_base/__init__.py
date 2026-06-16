@@ -58,16 +58,13 @@ def pre_init_hook(env):
     # dedicated alkathiry.organization model. Clear references to the vocabulary
     # codes that are being removed, so Odoo's end-of-load orphan cleanup can
     # delete them without hitting a foreign-key violation.
+    # Only the group-based union/organization TYPES are gone for good (bodies are
+    # dedicated now). The ladder tracks and leadership titles were kept — the
+    # generic ladder engine uses them — so they are NOT in this list.
     removed_codes = [
         "code_group_type_union",
         "code_group_type_organization",
         "code_group_type_activity",
-        "track_union",
-        "track_organization",
-        "pos_president",
-        "pos_deputy",
-        "pos_board_member",
-        "pos_member",
     ]
     imd = env["ir.model.data"].search(
         [

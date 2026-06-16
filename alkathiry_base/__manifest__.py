@@ -20,6 +20,7 @@
         "spp_area",
         "spp_vocabulary",
         "spp_disability_registry",
+        "web_hierarchy",
     ],
     "data": [
         "security/ir.model.access.csv",

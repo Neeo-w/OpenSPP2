@@ -1,20 +1,18 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <odoo noupdate="1">
     <!--
-        Tribal leadership ladders. The position matrix (alkathiry.tribe.position)
-        uses this track to separate the parallel chains of tribal officials —
-        sheikhs and aqils — each chained independently per country.
-
-        NOTE: unions and organizations are NOT here. They are dedicated bodies
-        (alkathiry.organization) whose members are individuals, with their own
-        screens — not registry groups and not position tracks.
+        The generic leadership-ladder engine. ONE engine (alkathiry.tribe.position)
+        renders a top-down chain of positions for ANY structure — tribes, unions,
+        committees, organizations. The only thing that changes between them is the
+        terminology: the TRACK below, and the position titles. Each ladder is chained
+        independently per country and can be cloned to another country.
     -->
     <record id="vocab_position_track" model="spp.vocabulary">
-        <field name="name">Position Track / Ladder</field>
+        <field name="name">Ladder / Structure Track</field>
         <field name="namespace_uri">urn:alkathiry:vocab:position-track</field>
         <field name="is_system">False</field>
         <field name="domain">core</field>
-        <field name="description">Separates the parallel tribal leadership ladders (sheikhs, aqils). Each ladder is chained independently per country.</field>
+        <field name="description">The kind of leadership ladder (the "name that changes"): sheikhs, aqils, union, committee, organization. Each is a separate top-down chain, independent per country.</field>
     </record>
     <record id="track_sheikhs" model="spp.vocabulary.code">
         <field name="vocabulary_id" ref="vocab_position_track" />
@@ -23,5 +21,35 @@
     <record id="track_aqils" model="spp.vocabulary.code">
         <field name="vocabulary_id" ref="vocab_position_track" />
         <field name="code">aqils</field><field name="display">Aqils Ladder</field><field name="sequence">20</field>
+    </record>
+    <record id="track_union" model="spp.vocabulary.code">
+        <field name="vocabulary_id" ref="vocab_position_track" />
+        <field name="code">union</field><field name="display">Union / Syndicate Ladder</field><field name="sequence">30</field>
+    </record>
+    <record id="track_committee" model="spp.vocabulary.code">
+        <field name="vocabulary_id" ref="vocab_position_track" />
+        <field name="code">committee</field><field name="display">Committee Ladder</field><field name="sequence">40</field>
+    </record>
+    <record id="track_organization" model="spp.vocabulary.code">
+        <field name="vocabulary_id" ref="vocab_position_track" />
+        <field name="code">organization</field><field name="display">Organization Ladder</field><field name="sequence">50</field>
+    </record>
+
+    <!-- ============ Leadership position titles (used by union/committee/org ladders) ============ -->
+    <record id="pos_president" model="spp.vocabulary.code">
+        <field name="vocabulary_id" ref="vocab_position" />
+        <field name="code">president</field><field name="display">President / Naqib</field><field name="sequence">90</field>
+    </record>
+    <record id="pos_deputy" model="spp.vocabulary.code">
+        <field name="vocabulary_id" ref="vocab_position" />
+        <field name="code">deputy</field><field name="display">Deputy</field><field name="sequence">100</field>
+    </record>
+    <record id="pos_board_member" model="spp.vocabulary.code">
+        <field name="vocabulary_id" ref="vocab_position" />
+        <field name="code">board_member</field><field name="display">Board Member</field><field name="sequence">110</field>
+    </record>
+    <record id="pos_member" model="spp.vocabulary.code">
+        <field name="vocabulary_id" ref="vocab_position" />
+        <field name="code">member</field><field name="display">Member</field><field name="sequence">120</field>
     </record>
 </odoo>

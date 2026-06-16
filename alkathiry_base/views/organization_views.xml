@@ -158,4 +158,18 @@
                 president and members.</p>
         </field>
     </record>
+
+    <record id="action_alk_committees" model="ir.actions.act_window">
+        <field name="name">Community Committees</field>
+        <field name="res_model">alkathiry.organization</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_alk_organization_search" />
+        <field name="domain">[('org_type_id.code', '=', 'committee')]</field>
+        <field name="context">{'default_org_type_id': %(alkathiry_base.org_type_committee)d}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Create a community committee</p>
+            <p>e.g. a relief or change committee. Set its country, head and members;
+                build its leadership chain in the Org Chart (ladder = committee).</p>
+        </field>
+    </record>
 </odoo>

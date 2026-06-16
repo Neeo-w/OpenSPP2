@@ -16,7 +16,7 @@
     />
     <menuitem
         id="menu_alk_tribe_positions"
-        name="Tribal Positions (Sheikhs / Aqils)"
+        name="Org Chart / Ladders"
         parent="menu_alk_tribes_root"
         action="action_alk_tribe_position"
         sequence="20"
@@ -42,5 +42,12 @@
         parent="menu_alk_bodies_root"
         action="action_alk_organizations"
         sequence="20"
+    />
+    <menuitem
+        id="menu_alk_committees"
+        name="Community Committees"
+        parent="menu_alk_bodies_root"
+        action="action_alk_committees"
+        sequence="30"
     />
 </odoo>

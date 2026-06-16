@@ -7,3 +7,4 @@ access_alk_organization_user,alk.organization.user,model_alkathiry_organization,
 access_alk_organization_admin,alk.organization.admin,model_alkathiry_organization,base.group_system,1,1,1,1
 access_alk_org_member_user,alk.org.member.user,model_alkathiry_organization_member,base.group_user,1,1,1,1
 access_alk_org_member_admin,alk.org.member.admin,model_alkathiry_organization_member,base.group_system,1,1,1,1
+access_alk_position_clone_user,alk.position.clone.user,model_alkathiry_position_clone,base.group_user,1,1,1,1
