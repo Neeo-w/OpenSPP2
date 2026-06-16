@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <!-- Add the lineage (Parent Tribe) section and the Positions tab into the
+         EXISTING group form (the shared registrant form, group side). The
+         "Group Type" field already on the form carries the lineage level. -->
+    <record id="view_groups_form_lineage_alk" model="ir.ui.view">
+        <field name="name">alkathiry.group.form.lineage</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="spp_registry.view_individuals_form" />
+        <field name="priority" eval="250" />
+        <field name="arch" type="xml">
+            <!-- Lineage block right after the group header (name / type). -->
+            <xpath expr="//group[@name='group_header_section']" position="after">
+                <separator string="Tribal Lineage (Nasab)" />
+                <group name="alk_lineage_section">
+                    <group>
+                        <field
+                            name="alk_lineage_parent_id"
+                            readonly="disabled"
+                            options="{'no_create_edit': True}"
+                        />
+                        <field name="alk_lineage_level" readonly="1" />
+                    </group>
+                    <group>
+                        <field name="alk_lineage_complete_name" readonly="1" />
+                        <field name="alk_lineage_path" invisible="1" />
+                    </group>
+                </group>
+            </xpath>
+
+            <!-- Tribal Structure tab: sub-tribes + positions matrix. -->
+            <xpath expr="//notebook[@name='group_detail']" position="inside">
+                <page string="Tribal Structure" name="alk_tribal_structure">
+                    <separator string="Sub-tribes" />
+                    <field name="alk_lineage_child_ids" nolabel="1" readonly="disabled">
+                        <list>
+                            <field name="name" string="Sub-tribe" />
+                            <field name="group_type_id" string="Level" />
+                            <field name="alk_lineage_member_count" string="Members" />
+                        </list>
+                    </field>
+                    <separator string="Positions (Tribe x Area -> Official)" />
+                    <field name="alk_position_ids" nolabel="1" readonly="disabled">
+                        <list editable="bottom">
+                            <field name="position_id" />
+                            <field name="area_id" />
+                            <field name="user_id" />
+                            <field name="parent_position_id" optional="hide" />
+                            <field name="date_start" optional="hide" />
+                            <field name="date_end" optional="hide" />
+                            <field name="active" widget="boolean_toggle" />
+                        </list>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Search: group registry groups by Parent Tribe / Level, and isolate
+         the lineage nodes. Inherits the standard groups search. -->
+    <record id="view_alk_groups_search" model="ir.ui.view">
+        <field name="name">alkathiry.groups.search.lineage</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="spp_registry.view_registry_groups_filter" />
+        <field name="priority" eval="200" />
+        <field name="arch" type="xml">
+            <xpath expr="//filter[@name='group_by_type']" position="before">
+                <filter
+                    string="Tribe Nodes"
+                    name="alk_tribe_nodes"
+                    domain="['|', ('alk_lineage_parent_id', '!=', False), ('alk_lineage_child_ids', '!=', False)]"
+                />
+                <separator />
+                <filter
+                    string="Parent Tribe"
+                    name="group_by_parent_tribe"
+                    context="{'group_by': 'alk_lineage_parent_id'}"
+                />
+            </xpath>
+        </field>
+    </record>
+
+    <!-- "Lineage Tree" entry: Browse All Groups, grouped by Parent Tribe. -->
+    <record id="action_alk_tribe_groups" model="ir.actions.act_window">
+        <field name="name">Tribal Lineage</field>
+        <field name="res_model">res.partner</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_alk_groups_search" />
+        <field name="domain">[('is_registrant', '=', True), ('is_group', '=', True)]</field>
+        <field name="context">{'default_is_registrant': True, 'default_is_group': True, 'search_default_group_by_parent_tribe': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Build the tribal lineage</p>
+            <p>Each tribe node is a registry group. Set its level with "Group Type"
+                and its place in the lineage with "Parent Tribe". Grand tribe >
+                tribe > batn > clan > fakheedah > family.</p>
+        </field>
+    </record>
+
+    <record id="action_alk_tribe_groups_list_view" model="ir.actions.act_window.view">
+        <field name="sequence" eval="1" />
+        <field name="view_mode">list</field>
+        <field name="view_id" ref="spp_registry.view_groups_list_tree" />
+        <field name="act_window_id" ref="action_alk_tribe_groups" />
+    </record>
+    <record id="action_alk_tribe_groups_form_view" model="ir.actions.act_window.view">
+        <field name="sequence" eval="2" />
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="spp_registry.view_individuals_form" />
+        <field name="act_window_id" ref="action_alk_tribe_groups" />
+    </record>
+</odoo>

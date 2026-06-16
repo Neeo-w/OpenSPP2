@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo noupdate="1">
+    <!--
+        Tribal lineage levels are seeded into the EXISTING group-type vocabulary
+        (urn:openspp:vocab:group-type) so a tribe node is a normal registry group
+        that appears in Browse All Groups and picks its level from the standard
+        "Group Type" field. household/family already ship with spp_vocabulary.
+
+        allow_all_member_type=True (from spp_registry_group_hierarchy) lets a group
+        of this level contain other groups as members — extending the small-family
+        group-of-groups upward into the full sequential lineage chain.
+
+        is_system=False on the codes so the committee can rename/add levels from the
+        Vocabulary UI without code changes.
+    -->
+    <record id="code_group_type_grand_tribe" model="spp.vocabulary.code">
+        <field name="vocabulary_id" ref="spp_vocabulary.vocab_group_type" />
+        <field name="code">grand_tribe</field>
+        <field name="display">Grand Tribe</field>
+        <field name="allow_all_member_type" eval="True" />
+        <field name="sequence">10</field>
+    </record>
+    <record id="code_group_type_tribe" model="spp.vocabulary.code">
+        <field name="vocabulary_id" ref="spp_vocabulary.vocab_group_type" />
+        <field name="code">tribe</field>
+        <field name="display">Tribe</field>
+        <field name="allow_all_member_type" eval="True" />
+        <field name="sequence">20</field>
+    </record>
+    <record id="code_group_type_batn" model="spp.vocabulary.code">
+        <field name="vocabulary_id" ref="spp_vocabulary.vocab_group_type" />
+        <field name="code">batn</field>
+        <field name="display">Batn (Section)</field>
+        <field name="allow_all_member_type" eval="True" />
+        <field name="sequence">30</field>
+    </record>
+    <record id="code_group_type_clan" model="spp.vocabulary.code">
+        <field name="vocabulary_id" ref="spp_vocabulary.vocab_group_type" />
+        <field name="code">clan</field>
+        <field name="display">Clan</field>
+        <field name="allow_all_member_type" eval="True" />
+        <field name="sequence">40</field>
+    </record>
+    <record id="code_group_type_fakheedah" model="spp.vocabulary.code">
+        <field name="vocabulary_id" ref="spp_vocabulary.vocab_group_type" />
+        <field name="code">fakheedah</field>
+        <field name="display">Fakheedah</field>
+        <field name="allow_all_member_type" eval="True" />
+        <field name="sequence">50</field>
+    </record>
+</odoo>

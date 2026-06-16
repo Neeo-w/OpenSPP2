@@ -5,10 +5,11 @@ class AlkathiryTribePosition(models.Model):
     """The tribal representation matrix: who leads which lineage node, where.
 
     One row = (lineage node x geographic scope) -> position + responsible
-    official. Because the same clan exists in several countries, it can have a
-    distinct row per geography (e.g. Al-Rawas: a Sheikh in Salalah/Oman and a
-    Muqaddam in Seiyun/Yemen). The verification router resolves a citizen's
-    official by matching the citizen's lineage node and area against these rows.
+    official. The lineage node is a registry group (``res.partner`` group), so
+    the same node exists once and can carry a distinct row per geography (e.g.
+    Al-Rawas: a Sheikh in Salalah/Oman and a Muqaddam in Seiyun/Yemen). The
+    verification router resolves a citizen's official by matching the citizen's
+    lineage node and area against these rows.
     """
 
     _name = "alkathiry.tribe.position"
@@ -19,11 +20,12 @@ class AlkathiryTribePosition(models.Model):
     active = fields.Boolean(default=True)
 
     tribe_id = fields.Many2one(
-        "alkathiry.tribe",
-        string="Lineage Node",
+        "res.partner",
+        string="Tribe / Lineage Node",
         required=True,
         ondelete="cascade",
         index=True,
+        domain="[('is_group', '=', True), ('is_registrant', '=', True)]",
     )
     area_id = fields.Many2one(
         "spp.area",

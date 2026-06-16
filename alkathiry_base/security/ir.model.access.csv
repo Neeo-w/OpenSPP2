@@ -1,7 +1,5 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_alk_health_condition_user,alk.health.condition.user,model_alkathiry_health_condition,base.group_user,1,1,1,0
 access_alk_health_condition_admin,alk.health.condition.admin,model_alkathiry_health_condition,base.group_system,1,1,1,1
-access_alk_tribe_user,alk.tribe.user,model_alkathiry_tribe,base.group_user,1,0,0,0
-access_alk_tribe_admin,alk.tribe.admin,model_alkathiry_tribe,base.group_system,1,1,1,1
 access_alk_tribe_position_user,alk.tribe.position.user,model_alkathiry_tribe_position,base.group_user,1,0,0,0
 access_alk_tribe_position_admin,alk.tribe.position.admin,model_alkathiry_tribe_position,base.group_system,1,1,1,1

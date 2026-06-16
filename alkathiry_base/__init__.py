@@ -2,23 +2,43 @@ from . import models
 
 
 def pre_init_hook(env):
-    """Reassign model external IDs that belonged to the defunct alkathiry_tribe module.
+    """Clean up before re-typing the lineage onto registry groups.
 
-    When alkathiry_tribe was installed as a separate module, Odoo registered
-    alkathiry.tribe and alkathiry.tribe.position under the 'alkathiry_tribe'
-    namespace.  Now that these models live in alkathiry_base, the old external
-    IDs must be removed before this module's security CSV is loaded — otherwise
-    the CSV lookup for 'model_alkathiry_tribe' fails because Odoo searches for
-    'alkathiry_base.model_alkathiry_tribe' and finds nothing.
+    The standalone ``alkathiry.tribe`` model is removed: the tribe node is now a
+    registry group (``res.partner``). Two columns that used to reference
+    ``alkathiry.tribe`` are re-typed to ``res.partner`` during this upgrade —
+    ``res_partner.alk_tribe_node_id`` and ``alkathiry_tribe_position.tribe_id``.
+    Their existing integer values point at old alkathiry.tribe ids, which would
+    violate the new foreign keys, so we clear them first.
 
-    Deleting the old entries here causes Odoo to re-register them under
-    'alkathiry_base' during the normal model-registration phase that follows.
+    This is also a no-op on a clean install (the columns/tables don't exist yet),
+    and it removes any stale external ids left by the previously separate
+    ``alkathiry_tribe`` module.
     """
-    defunct = "alkathiry_tribe"
-    stale_names = [
-        "model_alkathiry_tribe",
-        "model_alkathiry_tribe_position",
-    ]
+    cr = env.cr
+
+    # Clear stale lineage-node references on individuals (FK retargets to res.partner).
+    cr.execute(
+        """
+        SELECT 1 FROM information_schema.columns
+        WHERE table_name = 'res_partner' AND column_name = 'alk_tribe_node_id'
+        """
+    )
+    if cr.fetchone():
+        cr.execute("UPDATE res_partner SET alk_tribe_node_id = NULL")
+
+    # Drop old position rows whose tribe_id pointed at alkathiry.tribe ids.
+    cr.execute(
+        """
+        SELECT 1 FROM information_schema.tables
+        WHERE table_name = 'alkathiry_tribe_position'
+        """
+    )
+    if cr.fetchone():
+        cr.execute("DELETE FROM alkathiry_tribe_position")
+
+    # Remove stale external ids for the now-removed alkathiry.tribe model
+    # (whether registered by the old alkathiry_tribe module or alkathiry_base).
     env["ir.model.data"].search(
-        [("module", "=", defunct), ("name", "in", stale_names)]
+        [("model", "=", "ir.model"), ("name", "=", "model_alkathiry_tribe")]
     ).unlink()

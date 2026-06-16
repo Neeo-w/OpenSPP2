@@ -5,9 +5,10 @@ class ResPartner(models.Model):
     """Alkathiry community-profile extension on the registrant.
 
     No duplication: civil_status_id, occupation_id, income and address already
-    exist in ``spp_registry`` and are reused. Lineage uses the clean
-    ``alkathiry.tribe`` tree (not group membership); the responsible officials are
-    resolved from the positions matrix by intersecting lineage node with area.
+    exist in ``spp_registry`` and are reused. The lineage node is a registry
+    group (``res.partner`` group) carrying the lineage chain; the responsible
+    officials are resolved from the positions matrix by intersecting the
+    citizen's lineage node (and its ancestors) with their area.
     """
 
     _inherit = "res.partner"
@@ -21,13 +22,14 @@ class ResPartner(models.Model):
         help="System-generated unique community number for the individual.",
     )
 
-    # --- Lineage link (clean parent/child/level tree, independent of geography) ---
+    # --- Lineage link: the citizen's tribe node is a registry group ---
     alk_tribe_node_id = fields.Many2one(
-        "alkathiry.tribe",
+        "res.partner",
         string="Lineage Node",
         index=True,
-        help="The citizen's node in the tribal lineage tree (e.g. their family or "
-        "fakheedah). Independent of where they currently live.",
+        domain="[('is_group', '=', True), ('is_registrant', '=', True)]",
+        help="The citizen's node in the tribal lineage (a registry group, e.g. "
+        "their family or fakheedah). Independent of where they currently live.",
     )
     alk_representative_ids = fields.Many2many(
         "res.users",
@@ -79,16 +81,18 @@ class ResPartner(models.Model):
         for rec in self:
             rec.alk_health_condition_count = len(rec.alk_health_condition_ids)
 
-    @api.depends("alk_tribe_node_id", "area_id")
+    @api.depends("alk_tribe_node_id", "alk_tribe_node_id.alk_lineage_path", "area_id")
     def _compute_alk_representatives(self):
         positions_model = self.env["alkathiry.tribe.position"]
         for rec in self:
             users = self.env["res.users"].browse()
-            if rec.alk_tribe_node_id:
-                # Positions whose lineage node is this node or an ancestor.
+            node = rec.alk_tribe_node_id
+            if node and node.alk_lineage_path:
+                # Ancestor (and self) node ids read straight from the lineage path.
+                ancestor_ids = [int(x) for x in node.alk_lineage_path.split("/") if x]
                 positions = positions_model.search(
                     [
-                        ("tribe_id", "parent_of", rec.alk_tribe_node_id.id),
+                        ("tribe_id", "in", ancestor_ids),
                         ("active", "=", True),
                     ]
                 )

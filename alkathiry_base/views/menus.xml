@@ -9,9 +9,9 @@
     />
     <menuitem
         id="menu_alk_lineage_tree"
-        name="Lineage Tree"
+        name="Tribal Lineage"
         parent="menu_alk_tribes_root"
-        action="action_alk_tribe"
+        action="action_alk_tribe_groups"
         sequence="10"
     />
     <menuitem
