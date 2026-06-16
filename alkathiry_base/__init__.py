@@ -53,3 +53,48 @@ def pre_init_hook(env):
     env["ir.model.data"].search(
         [("model", "=", "ir.model"), ("name", "=", "model_alkathiry_tribe")]
     ).unlink()
+
+    # Unions/organizations moved from registry groups + position tracks to the
+    # dedicated alkathiry.organization model. Clear references to the vocabulary
+    # codes that are being removed, so Odoo's end-of-load orphan cleanup can
+    # delete them without hitting a foreign-key violation.
+    removed_codes = [
+        "code_group_type_union",
+        "code_group_type_organization",
+        "code_group_type_activity",
+        "track_union",
+        "track_organization",
+        "pos_president",
+        "pos_deputy",
+        "pos_board_member",
+        "pos_member",
+    ]
+    imd = env["ir.model.data"].search(
+        [
+            ("module", "=", "alkathiry_base"),
+            ("model", "=", "spp.vocabulary.code"),
+            ("name", "in", removed_codes),
+        ]
+    )
+    code_ids = imd.mapped("res_id")
+    if code_ids:
+        # Groups that were typed with the deprecated union/organization types.
+        cr.execute(
+            "SELECT 1 FROM information_schema.columns "
+            "WHERE table_name = 'res_partner' AND column_name = 'group_type_id'"
+        )
+        if cr.fetchone():
+            cr.execute(
+                "UPDATE res_partner SET group_type_id = NULL WHERE group_type_id = ANY(%s)",
+                (code_ids,),
+            )
+        # Any position rows that used the deprecated union/org tracks or roles.
+        cr.execute(
+            "SELECT 1 FROM information_schema.tables WHERE table_name = 'alkathiry_tribe_position'"
+        )
+        if cr.fetchone():
+            cr.execute(
+                "DELETE FROM alkathiry_tribe_position "
+                "WHERE track_id = ANY(%s) OR position_id = ANY(%s)",
+                (code_ids, code_ids),
+            )

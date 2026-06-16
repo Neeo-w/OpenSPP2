@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo noupdate="1">
+    <!--
+        Dedicated terminology for unions / organizations (NOT registry groups).
+        org-type = the kind of body; org-category = its specialty; org-role = a
+        member's role inside it. All is_system=False so the committee manages them.
+    -->
+
+    <!-- ============ Organization Type (the kind of body) ============ -->
+    <record id="vocab_org_type" model="spp.vocabulary">
+        <field name="name">Organization Type</field>
+        <field name="namespace_uri">urn:alkathiry:vocab:org-type</field>
+        <field name="is_system">False</field>
+        <field name="domain">core</field>
+        <field name="description">Kind of body: union/syndicate, federation, organization, association, cooperative.</field>
+    </record>
+    <record id="org_type_union" model="spp.vocabulary.code">
+        <field name="vocabulary_id" ref="vocab_org_type" />
+        <field name="code">union</field><field name="display">Union / Syndicate</field><field name="sequence">10</field>
+    </record>
+    <record id="org_type_federation" model="spp.vocabulary.code">
+        <field name="vocabulary_id" ref="vocab_org_type" />
+        <field name="code">federation</field><field name="display">Federation</field><field name="sequence">20</field>
+    </record>
+    <record id="org_type_organization" model="spp.vocabulary.code">
+        <field name="vocabulary_id" ref="vocab_org_type" />
+        <field name="code">organization</field><field name="display">Organization</field><field name="sequence">30</field>
+    </record>
+    <record id="org_type_association" model="spp.vocabulary.code">
+        <field name="vocabulary_id" ref="vocab_org_type" />
+        <field name="code">association</field><field name="display">Association</field><field name="sequence">40</field>
+    </record>
+    <record id="org_type_cooperative" model="spp.vocabulary.code">
+        <field name="vocabulary_id" ref="vocab_org_type" />
+        <field name="code">cooperative</field><field name="display">Cooperative</field><field name="sequence">50</field>
+    </record>
+
+    <!-- ============ Organization Category (the specialty / field) ============ -->
+    <record id="vocab_org_category" model="spp.vocabulary">
+        <field name="name">Organization Category</field>
+        <field name="namespace_uri">urn:alkathiry:vocab:org-category</field>
+        <field name="is_system">False</field>
+        <field name="domain">core</field>
+        <field name="description">Specialty/domain: engineers, farmers, doctors, health, agriculture...</field>
+    </record>
+    <record id="org_cat_engineers" model="spp.vocabulary.code">
+        <field name="vocabulary_id" ref="vocab_org_category" />
+        <field name="code">engineers</field><field name="display">Engineers</field><field name="sequence">10</field>
+    </record>
+    <record id="org_cat_farmers" model="spp.vocabulary.code">
+        <field name="vocabulary_id" ref="vocab_org_category" />
+        <field name="code">farmers</field><field name="display">Farmers</field><field name="sequence">20</field>
+    </record>
+    <record id="org_cat_doctors" model="spp.vocabulary.code">
+        <field name="vocabulary_id" ref="vocab_org_category" />
+        <field name="code">doctors</field><field name="display">Doctors</field><field name="sequence">30</field>
+    </record>
+    <record id="org_cat_teachers" model="spp.vocabulary.code">
+        <field name="vocabulary_id" ref="vocab_org_category" />
+        <field name="code">teachers</field><field name="display">Teachers</field><field name="sequence">40</field>
+    </record>
+    <record id="org_cat_lawyers" model="spp.vocabulary.code">
+        <field name="vocabulary_id" ref="vocab_org_category" />
+        <field name="code">lawyers</field><field name="display">Lawyers</field><field name="sequence">50</field>
+    </record>
+    <record id="org_cat_health" model="spp.vocabulary.code">
+        <field name="vocabulary_id" ref="vocab_org_category" />
+        <field name="code">health</field><field name="display">Health</field><field name="sequence">60</field>
+    </record>
+    <record id="org_cat_agriculture" model="spp.vocabulary.code">
+        <field name="vocabulary_id" ref="vocab_org_category" />
+        <field name="code">agriculture</field><field name="display">Agriculture</field><field name="sequence">70</field>
+    </record>
+    <record id="org_cat_charity" model="spp.vocabulary.code">
+        <field name="vocabulary_id" ref="vocab_org_category" />
+        <field name="code">charity</field><field name="display">Charity / Relief</field><field name="sequence">80</field>
+    </record>
+    <record id="org_cat_other" model="spp.vocabulary.code">
+        <field name="vocabulary_id" ref="vocab_org_category" />
+        <field name="code">other</field><field name="display">Other</field><field name="sequence">90</field>
+    </record>
+
+    <!-- ============ Member Role inside the organization ============ -->
+    <record id="vocab_org_role" model="spp.vocabulary">
+        <field name="name">Organization Member Role</field>
+        <field name="namespace_uri">urn:alkathiry:vocab:org-role</field>
+        <field name="is_system">False</field>
+        <field name="domain">core</field>
+        <field name="description">Role of a member inside the body: president, deputy, secretary, treasurer, board member, member.</field>
+    </record>
+    <record id="org_role_president" model="spp.vocabulary.code">
+        <field name="vocabulary_id" ref="vocab_org_role" />
+        <field name="code">president</field><field name="display">President / Naqib</field><field name="sequence">10</field>
+    </record>
+    <record id="org_role_vice" model="spp.vocabulary.code">
+        <field name="vocabulary_id" ref="vocab_org_role" />
+        <field name="code">vice_president</field><field name="display">Vice President</field><field name="sequence">20</field>
+    </record>
+    <record id="org_role_secretary" model="spp.vocabulary.code">
+        <field name="vocabulary_id" ref="vocab_org_role" />
+        <field name="code">secretary</field><field name="display">Secretary</field><field name="sequence">30</field>
+    </record>
+    <record id="org_role_treasurer" model="spp.vocabulary.code">
+        <field name="vocabulary_id" ref="vocab_org_role" />
+        <field name="code">treasurer</field><field name="display">Treasurer</field><field name="sequence">40</field>
+    </record>
+    <record id="org_role_board" model="spp.vocabulary.code">
+        <field name="vocabulary_id" ref="vocab_org_role" />
+        <field name="code">board_member</field><field name="display">Board Member</field><field name="sequence">50</field>
+    </record>
+    <record id="org_role_member" model="spp.vocabulary.code">
+        <field name="vocabulary_id" ref="vocab_org_role" />
+        <field name="code">member</field><field name="display">Member</field><field name="sequence">60</field>
+    </record>
+</odoo>

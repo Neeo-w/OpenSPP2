@@ -76,6 +76,13 @@ class ResPartner(models.Model):
         compute="_compute_alk_health_condition_count",
     )
 
+    # --- Union / organization memberships (people belong to bodies) ---
+    alk_org_membership_ids = fields.One2many(
+        "alkathiry.organization.member",
+        "partner_id",
+        string="Union / Organization Memberships",
+    )
+
     @api.depends("alk_health_condition_ids")
     def _compute_alk_health_condition_count(self):
         for rec in self:

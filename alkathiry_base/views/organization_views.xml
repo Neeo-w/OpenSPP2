@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <!-- ============ List ============ -->
+    <record id="view_alk_organization_list" model="ir.ui.view">
+        <field name="name">alkathiry.organization.list</field>
+        <field name="model">alkathiry.organization</field>
+        <field name="arch" type="xml">
+            <list string="Unions &amp; Organizations">
+                <field name="name" />
+                <field name="org_type_id" />
+                <field name="category_id" />
+                <field name="area_id" />
+                <field name="president_id" />
+                <field name="member_count" string="Members" />
+            </list>
+        </field>
+    </record>
+
+    <!-- ============ Form ============ -->
+    <record id="view_alk_organization_form" model="ir.ui.view">
+        <field name="name">alkathiry.organization.form</field>
+        <field name="model">alkathiry.organization</field>
+        <field name="arch" type="xml">
+            <form string="Union / Organization">
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button
+                            name="action_view_members"
+                            type="object"
+                            class="oe_stat_button"
+                            icon="fa-users"
+                        >
+                            <field name="member_count" widget="statinfo" string="Members" />
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <label for="name" string="Name" />
+                        <h1>
+                            <field name="name" placeholder="e.g. Engineers' Syndicate — Yemen" />
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="Classification">
+                            <field name="org_type_id" options="{'no_create_edit': True}" />
+                            <field name="category_id" options="{'no_create_edit': True}" />
+                            <field name="code" />
+                            <field name="date_established" />
+                            <field name="active" />
+                        </group>
+                        <group string="Location &amp; Contact">
+                            <field name="area_id" />
+                            <field name="address" />
+                            <field name="phone" widget="phone" />
+                            <field name="email" widget="email" />
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Leadership">
+                            <field name="president_id" widget="many2one" options="{'no_create_edit': True}" />
+                        </group>
+                        <group string="Hierarchy (optional)">
+                            <field name="parent_id" options="{'no_create_edit': True}" />
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Members" name="members">
+                            <field name="member_ids" context="{'default_organization_id': id}">
+                                <list editable="bottom">
+                                    <field name="partner_id" />
+                                    <field name="role_id" options="{'no_create_edit': True}" />
+                                    <field name="membership_no" optional="show" />
+                                    <field name="date_join" optional="show" />
+                                    <field name="date_end" optional="hide" />
+                                    <field name="active" widget="boolean_toggle" />
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Branches" name="branches">
+                            <field name="child_ids">
+                                <list>
+                                    <field name="name" />
+                                    <field name="org_type_id" />
+                                    <field name="area_id" />
+                                    <field name="member_count" string="Members" />
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Notes" name="notes">
+                            <field name="notes" placeholder="Additional details..." />
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- ============ Search ============ -->
+    <record id="view_alk_organization_search" model="ir.ui.view">
+        <field name="name">alkathiry.organization.search</field>
+        <field name="model">alkathiry.organization</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name" />
+                <field name="org_type_id" />
+                <field name="category_id" />
+                <field name="area_id" />
+                <field name="president_id" />
+                <separator />
+                <filter name="g_type" string="Type" context="{'group_by': 'org_type_id'}" />
+                <filter name="g_category" string="Specialty" context="{'group_by': 'category_id'}" />
+                <filter name="g_area" string="Country / Area" context="{'group_by': 'area_id'}" />
+            </search>
+        </field>
+    </record>
+
+    <!-- ============ Member list/form (standalone) ============ -->
+    <record id="view_alk_org_member_list" model="ir.ui.view">
+        <field name="name">alkathiry.organization.member.list</field>
+        <field name="model">alkathiry.organization.member</field>
+        <field name="arch" type="xml">
+            <list string="Members" editable="bottom">
+                <field name="organization_id" />
+                <field name="partner_id" />
+                <field name="role_id" />
+                <field name="membership_no" optional="show" />
+                <field name="date_join" optional="show" />
+                <field name="active" widget="boolean_toggle" />
+            </list>
+        </field>
+    </record>
+
+    <!-- ============ Actions: dedicated pages per body kind ============ -->
+    <record id="action_alk_unions" model="ir.actions.act_window">
+        <field name="name">Unions &amp; Syndicates</field>
+        <field name="res_model">alkathiry.organization</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_alk_organization_search" />
+        <field name="domain">[('org_type_id.code', 'in', ['union', 'federation'])]</field>
+        <field name="context">{'default_org_type_id': %(alkathiry_base.org_type_union)d}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Create a union / syndicate</p>
+            <p>e.g. Engineers' Syndicate, Farmers' Syndicate. Set its specialty,
+                country, address and president, then add members (individuals).
+                Create one record per country.</p>
+        </field>
+    </record>
+
+    <record id="action_alk_organizations" model="ir.actions.act_window">
+        <field name="name">Organizations</field>
+        <field name="res_model">alkathiry.organization</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_alk_organization_search" />
+        <field name="domain">[('org_type_id.code', 'in', ['organization', 'association', 'cooperative'])]</field>
+        <field name="context">{'default_org_type_id': %(alkathiry_base.org_type_organization)d}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Create an organization</p>
+            <p>e.g. Health Organization, Agricultural Cooperative. Set its country,
+                president and members.</p>
+        </field>
+    </record>
+</odoo>

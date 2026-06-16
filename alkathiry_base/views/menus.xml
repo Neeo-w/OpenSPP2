@@ -15,24 +15,32 @@
         sequence="10"
     />
     <menuitem
+        id="menu_alk_tribe_positions"
+        name="Tribal Positions (Sheikhs / Aqils)"
+        parent="menu_alk_tribes_root"
+        action="action_alk_tribe_position"
+        sequence="20"
+    />
+
+    <!-- Unions & Organizations: dedicated bodies whose members are individuals. -->
+    <menuitem
+        id="menu_alk_bodies_root"
+        name="Unions &amp; Organizations"
+        parent="spp_registry.spp_main_menu_root"
+        sequence="21"
+    />
+    <menuitem
         id="menu_alk_unions"
         name="Unions &amp; Syndicates"
-        parent="menu_alk_tribes_root"
+        parent="menu_alk_bodies_root"
         action="action_alk_unions"
-        sequence="20"
+        sequence="10"
     />
     <menuitem
         id="menu_alk_organizations"
         name="Organizations"
-        parent="menu_alk_tribes_root"
+        parent="menu_alk_bodies_root"
         action="action_alk_organizations"
-        sequence="30"
-    />
-    <menuitem
-        id="menu_alk_tribe_positions"
-        name="Positions / Ladders"
-        parent="menu_alk_tribes_root"
-        action="action_alk_tribe_position"
-        sequence="40"
+        sequence="20"
     />
 </odoo>

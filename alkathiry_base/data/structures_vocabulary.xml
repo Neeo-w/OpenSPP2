@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <odoo noupdate="1">
     <!--
-        STRUCTURES layer: the same group+positions infrastructure now models any
-        hierarchical body of registrants (tribal ladders, professional unions,
-        civil organizations, activities), each scoped per country and built
-        dynamically from these vocabularies. Everything is is_system=False so the
-        committee manages it from the Vocabulary UI.
-    -->
+        Tribal leadership ladders. The position matrix (alkathiry.tribe.position)
+        uses this track to separate the parallel chains of tribal officials —
+        sheikhs and aqils — each chained independently per country.
 
-    <!-- ============ Position Track (the "ladder" a position belongs to) ============ -->
+        NOTE: unions and organizations are NOT here. They are dedicated bodies
+        (alkathiry.organization) whose members are individuals, with their own
+        screens — not registry groups and not position tracks.
+    -->
     <record id="vocab_position_track" model="spp.vocabulary">
         <field name="name">Position Track / Ladder</field>
         <field name="namespace_uri">urn:alkathiry:vocab:position-track</field>
         <field name="is_system">False</field>
         <field name="domain">core</field>
-        <field name="description">Separates parallel leadership ladders: sheikhs, aqils, unions, organizations. Each ladder is chained independently per country.</field>
+        <field name="description">Separates the parallel tribal leadership ladders (sheikhs, aqils). Each ladder is chained independently per country.</field>
     </record>
     <record id="track_sheikhs" model="spp.vocabulary.code">
         <field name="vocabulary_id" ref="vocab_position_track" />
@@ -23,52 +23,5 @@
     <record id="track_aqils" model="spp.vocabulary.code">
         <field name="vocabulary_id" ref="vocab_position_track" />
         <field name="code">aqils</field><field name="display">Aqils Ladder</field><field name="sequence">20</field>
-    </record>
-    <record id="track_union" model="spp.vocabulary.code">
-        <field name="vocabulary_id" ref="vocab_position_track" />
-        <field name="code">union</field><field name="display">Union / Syndicate</field><field name="sequence">30</field>
-    </record>
-    <record id="track_organization" model="spp.vocabulary.code">
-        <field name="vocabulary_id" ref="vocab_position_track" />
-        <field name="code">organization</field><field name="display">Organization</field><field name="sequence">40</field>
-    </record>
-
-    <!-- ============ Leadership positions for unions/organizations ============ -->
-    <!-- Added to the existing position vocabulary (alkathiry_base.vocab_position). -->
-    <record id="pos_president" model="spp.vocabulary.code">
-        <field name="vocabulary_id" ref="vocab_position" />
-        <field name="code">president</field><field name="display">President / Naqib</field><field name="sequence">90</field>
-    </record>
-    <record id="pos_deputy" model="spp.vocabulary.code">
-        <field name="vocabulary_id" ref="vocab_position" />
-        <field name="code">deputy</field><field name="display">Deputy</field><field name="sequence">100</field>
-    </record>
-    <record id="pos_board_member" model="spp.vocabulary.code">
-        <field name="vocabulary_id" ref="vocab_position" />
-        <field name="code">board_member</field><field name="display">Board Member</field><field name="sequence">110</field>
-    </record>
-    <record id="pos_member" model="spp.vocabulary.code">
-        <field name="vocabulary_id" ref="vocab_position" />
-        <field name="code">member</field><field name="display">Member</field><field name="sequence">120</field>
-    </record>
-
-    <!-- ============ Body group types (added to the shared group-type vocab) ============ -->
-    <record id="code_group_type_union" model="spp.vocabulary.code">
-        <field name="vocabulary_id" ref="spp_vocabulary.vocab_group_type" />
-        <field name="code">union</field><field name="display">Union / Syndicate</field>
-        <field name="allow_all_member_type" eval="True" />
-        <field name="sequence">60</field>
-    </record>
-    <record id="code_group_type_organization" model="spp.vocabulary.code">
-        <field name="vocabulary_id" ref="spp_vocabulary.vocab_group_type" />
-        <field name="code">organization</field><field name="display">Organization</field>
-        <field name="allow_all_member_type" eval="True" />
-        <field name="sequence">70</field>
-    </record>
-    <record id="code_group_type_activity" model="spp.vocabulary.code">
-        <field name="vocabulary_id" ref="spp_vocabulary.vocab_group_type" />
-        <field name="code">activity</field><field name="display">Activity / Event Body</field>
-        <field name="allow_all_member_type" eval="True" />
-        <field name="sequence">80</field>
     </record>
 </odoo>
