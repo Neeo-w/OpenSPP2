@@ -28,6 +28,23 @@
                     <field name="alk_health_status_id" />
                 </group>
                 <field name="alk_health_condition_ids" nolabel="1" />
+
+                <!-- Unified affiliations: every body the citizen belongs to
+                     (tribe / union / organization / activity), one list, with the
+                     Body Type column so it reads grouped by kind. Driven entirely by
+                     group membership, so a new body type needs no new field. -->
+                <separator string="Affiliations (Tribe / Unions / Organizations)" />
+                <field name="individual_membership_ids" nolabel="1">
+                    <list editable="bottom">
+                        <field name="group_type_id" string="Body Type" optional="show" />
+                        <field name="group" string="Body" />
+                        <field name="group_area_id" string="Country / Area" optional="show" />
+                        <field name="membership_type_ids" widget="many2many_tags" optional="show" />
+                        <field name="start_date" optional="hide" />
+                        <field name="ended_date" optional="hide" />
+                        <field name="status" optional="hide" />
+                    </list>
+                </field>
             </xpath>
         </field>
     </record>

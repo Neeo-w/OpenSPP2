@@ -28,20 +28,22 @@
                 </group>
             </xpath>
 
-            <!-- Tribal Structure tab: sub-tribes + positions matrix. -->
+            <!-- Structure tab: sub-bodies (lineage) + leadership positions.
+                 Shared by tribes, unions and organizations. -->
             <xpath expr="//notebook[@name='group_detail']" position="inside">
-                <page string="Tribal Structure" name="alk_tribal_structure">
-                    <separator string="Sub-tribes" />
+                <page string="Structure &amp; Positions" name="alk_tribal_structure">
+                    <separator string="Sub-structures (Lineage)" />
                     <field name="alk_lineage_child_ids" nolabel="1" readonly="disabled">
                         <list>
-                            <field name="name" string="Sub-tribe" />
-                            <field name="group_type_id" string="Level" />
+                            <field name="name" string="Sub-structure" />
+                            <field name="group_type_id" string="Level / Type" />
                             <field name="alk_lineage_member_count" string="Members" />
                         </list>
                     </field>
-                    <separator string="Positions (Tribe x Area -> Official)" />
+                    <separator string="Leadership Positions (Track x Area -> Official)" />
                     <field name="alk_position_ids" nolabel="1" readonly="disabled">
                         <list editable="bottom">
+                            <field name="track_id" />
                             <field name="position_id" />
                             <field name="area_id" />
                             <field name="user_id" />
@@ -107,5 +109,62 @@
         <field name="view_mode">form</field>
         <field name="view_id" ref="spp_registry.view_individuals_form" />
         <field name="act_window_id" ref="action_alk_tribe_groups" />
+    </record>
+
+    <!-- Dedicated page: Unions / Syndicates (groups of type "union"). -->
+    <record id="action_alk_unions" model="ir.actions.act_window">
+        <field name="name">Unions &amp; Syndicates</field>
+        <field name="res_model">res.partner</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_alk_groups_search" />
+        <field name="domain">[('is_registrant', '=', True), ('is_group', '=', True), ('group_type_id.code', '=', 'union')]</field>
+        <field name="context">{'default_is_registrant': True, 'default_is_group': True}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Create a union / syndicate</p>
+            <p>e.g. Doctors' Syndicate, Engineers' Syndicate. Set its country (Area),
+                add members, and assign President / Deputy in the Structure tab
+                (track = Union). One body per country; chain national to regional
+                with "Parent Tribe".</p>
+        </field>
+    </record>
+    <record id="action_alk_unions_list_view" model="ir.actions.act_window.view">
+        <field name="sequence" eval="1" />
+        <field name="view_mode">list</field>
+        <field name="view_id" ref="spp_registry.view_groups_list_tree" />
+        <field name="act_window_id" ref="action_alk_unions" />
+    </record>
+    <record id="action_alk_unions_form_view" model="ir.actions.act_window.view">
+        <field name="sequence" eval="2" />
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="spp_registry.view_individuals_form" />
+        <field name="act_window_id" ref="action_alk_unions" />
+    </record>
+
+    <!-- Dedicated page: Organizations (groups of type "organization"). -->
+    <record id="action_alk_organizations" model="ir.actions.act_window">
+        <field name="name">Organizations</field>
+        <field name="res_model">res.partner</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_alk_groups_search" />
+        <field name="domain">[('is_registrant', '=', True), ('is_group', '=', True), ('group_type_id.code', '=', 'organization')]</field>
+        <field name="context">{'default_is_registrant': True, 'default_is_group': True}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Create an organization</p>
+            <p>e.g. Health Organization, Agricultural Cooperatives. Set its country,
+                add members, and assign leadership in the Structure tab
+                (track = Organization).</p>
+        </field>
+    </record>
+    <record id="action_alk_organizations_list_view" model="ir.actions.act_window.view">
+        <field name="sequence" eval="1" />
+        <field name="view_mode">list</field>
+        <field name="view_id" ref="spp_registry.view_groups_list_tree" />
+        <field name="act_window_id" ref="action_alk_organizations" />
+    </record>
+    <record id="action_alk_organizations_form_view" model="ir.actions.act_window.view">
+        <field name="sequence" eval="2" />
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="spp_registry.view_individuals_form" />
+        <field name="act_window_id" ref="action_alk_organizations" />
     </record>
 </odoo>

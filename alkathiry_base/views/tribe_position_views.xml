@@ -4,7 +4,8 @@
         <field name="name">alkathiry.tribe.position.list</field>
         <field name="model">alkathiry.tribe.position</field>
         <field name="arch" type="xml">
-            <list string="Tribal Positions" editable="bottom">
+            <list string="Positions" editable="bottom">
+                <field name="track_id" />
                 <field name="tribe_id" />
                 <field name="area_id" />
                 <field name="position_id" />
@@ -19,17 +20,18 @@
         <field name="name">alkathiry.tribe.position.form</field>
         <field name="model">alkathiry.tribe.position</field>
         <field name="arch" type="xml">
-            <form string="Tribal Position">
+            <form string="Position">
                 <sheet>
                     <group>
                         <group string="Scope">
+                            <field name="track_id" />
                             <field name="tribe_id" />
                             <field name="area_id" />
                         </group>
                         <group string="Assignment">
                             <field name="position_id" />
                             <field name="user_id" />
-                            <field name="parent_position_id" />
+                            <field name="parent_position_id" domain="[('track_id', '=', track_id)]" />
                         </group>
                         <group string="Validity">
                             <field name="date_start" />
@@ -47,27 +49,31 @@
         <field name="model">alkathiry.tribe.position</field>
         <field name="arch" type="xml">
             <search>
+                <field name="track_id" />
                 <field name="tribe_id" />
                 <field name="area_id" />
                 <field name="position_id" />
                 <field name="user_id" />
                 <separator />
-                <filter name="g_tribe" string="Tribe" context="{'group_by': 'tribe_id'}" />
-                <filter name="g_area" string="Area" context="{'group_by': 'area_id'}" />
+                <filter name="g_track" string="Track / Ladder" context="{'group_by': 'track_id'}" />
+                <filter name="g_area" string="Country / Area" context="{'group_by': 'area_id'}" />
+                <filter name="g_body" string="Body" context="{'group_by': 'tribe_id'}" />
                 <filter name="g_position" string="Position" context="{'group_by': 'position_id'}" />
             </search>
         </field>
     </record>
 
     <record id="action_alk_tribe_position" model="ir.actions.act_window">
-        <field name="name">Tribal Positions</field>
+        <field name="name">Positions (Leadership Ladders)</field>
         <field name="res_model">alkathiry.tribe.position</field>
         <field name="view_mode">list,form</field>
         <field name="search_view_id" ref="view_alk_tribe_position_search" />
+        <field name="context">{'search_default_g_track': 1, 'search_default_g_area': 1}</field>
         <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">Map officials to tribe + area</p>
-            <p>Assign a position and responsible official to a lineage node within a
-                geographic scope. The same node can have different officials per country.</p>
+            <p class="o_view_nocontent_smiling_face">Build the leadership ladders</p>
+            <p>Assign a position and responsible official to a body (tribe / union /
+                organization) within a track and a country. Chain positions with
+                "Reports To"; each ladder stays independent per country.</p>
         </field>
     </record>
 </odoo>

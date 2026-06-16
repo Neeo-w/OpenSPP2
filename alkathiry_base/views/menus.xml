@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <odoo>
-    <!-- "Tribes & Positions" lives inside the Registry app (spp_registry root). -->
+    <!-- Community structures live inside the Registry app (spp_registry root). -->
     <menuitem
         id="menu_alk_tribes_root"
-        name="Tribes &amp; Positions"
+        name="Community Structures"
         parent="spp_registry.spp_main_menu_root"
         sequence="20"
     />
@@ -15,10 +15,24 @@
         sequence="10"
     />
     <menuitem
+        id="menu_alk_unions"
+        name="Unions &amp; Syndicates"
+        parent="menu_alk_tribes_root"
+        action="action_alk_unions"
+        sequence="20"
+    />
+    <menuitem
+        id="menu_alk_organizations"
+        name="Organizations"
+        parent="menu_alk_tribes_root"
+        action="action_alk_organizations"
+        sequence="30"
+    />
+    <menuitem
         id="menu_alk_tribe_positions"
-        name="Positions"
+        name="Positions / Ladders"
         parent="menu_alk_tribes_root"
         action="action_alk_tribe_position"
-        sequence="20"
+        sequence="40"
     />
 </odoo>

@@ -26,6 +26,7 @@
         "data/ir_sequence.xml",
         "data/alkathiry_vocabularies.xml",
         "data/group_type_levels.xml",
+        "data/structures_vocabulary.xml",
         "data/tribal_relationship_codes.xml",
         "views/health_condition_views.xml",
         "views/group_lineage_views.xml",
