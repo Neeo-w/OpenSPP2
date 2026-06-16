@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo noupdate="1">
+    <!--
+        Tribal cross-links (NON-hierarchical). The lineage (Parent Tribe / Sub-tribes)
+        owns the structural "who is under whom". These relationship codes capture the
+        SIDEWAYS ties between tribes/clans — alliances, marriage affinity, allegiance —
+        through the existing spp.registry.relationship graph, so the Identity-tab
+        "Relationships" section becomes tribal-expressive instead of generic
+        "Parent Organization / Subsidiary".
+
+        They are added into the EXISTING relationship vocabulary and LINKED (not reset)
+        into the group-to-group concept group, so they show up automatically whenever
+        both sides are groups. All display labels are editable from the Vocabulary UI.
+    -->
+    <record id="code_rel_allied_tribe" model="spp.vocabulary.code">
+        <field name="vocabulary_id" ref="spp_vocabulary.vocab_relationship" />
+        <field name="code">allied_tribe</field>
+        <field name="display">Allied Tribe (Hilf)</field>
+        <field name="sequence">200</field>
+    </record>
+    <record id="code_rel_marriage_affinity" model="spp.vocabulary.code">
+        <field name="vocabulary_id" ref="spp_vocabulary.vocab_relationship" />
+        <field name="code">marriage_affinity</field>
+        <field name="display">Marriage Affinity (Musahara)</field>
+        <field name="sequence">210</field>
+    </record>
+    <record id="code_rel_allegiance" model="spp.vocabulary.code">
+        <field name="vocabulary_id" ref="spp_vocabulary.vocab_relationship" />
+        <field name="code">allegiance_pact</field>
+        <field name="display">Allegiance / Protection (Jiwar)</field>
+        <field name="sequence">220</field>
+    </record>
+
+    <!-- Link them into the group-to-group concept group WITHOUT dropping the
+         existing codes (Command.link, not Command.set). -->
+    <record id="spp_vocabulary.group_rel_group_to_group" model="spp.vocabulary.concept.group">
+        <field
+            name="code_ids"
+            eval="[Command.link(ref('code_rel_allied_tribe')),
+                   Command.link(ref('code_rel_marriage_affinity')),
+                   Command.link(ref('code_rel_allegiance'))]"
+        />
+    </record>
+</odoo>
