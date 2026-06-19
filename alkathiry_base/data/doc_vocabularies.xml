@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo noupdate="1">
+    <!-- Member roles inside a certification level. -->
+    <record id="vocab_doc_role" model="spp.vocabulary">
+        <field name="name">Documenter Role</field>
+        <field name="namespace_uri">urn:alkathiry:vocab:doc-role</field>
+        <field name="is_system">False</field>
+        <field name="domain">core</field>
+        <field name="description">Role of a member in a certification level: manager / member / assistant / employee.</field>
+    </record>
+    <record id="doc_role_manager" model="spp.vocabulary.code">
+        <field name="vocabulary_id" ref="vocab_doc_role" />
+        <field name="code">manager</field><field name="display">Manager (Responsible)</field><field name="sequence">10</field>
+    </record>
+    <record id="doc_role_member" model="spp.vocabulary.code">
+        <field name="vocabulary_id" ref="vocab_doc_role" />
+        <field name="code">member</field><field name="display">Member</field><field name="sequence">20</field>
+    </record>
+    <record id="doc_role_assistant" model="spp.vocabulary.code">
+        <field name="vocabulary_id" ref="vocab_doc_role" />
+        <field name="code">assistant</field><field name="display">Assistant</field><field name="sequence">30</field>
+    </record>
+    <record id="doc_role_employee" model="spp.vocabulary.code">
+        <field name="vocabulary_id" ref="vocab_doc_role" />
+        <field name="code">employee</field><field name="display">Employee</field><field name="sequence">40</field>
+    </record>
+
+    <!-- Lightweight job vocabulary (replaces hr.job, which is not installed). -->
+    <record id="vocab_job" model="spp.vocabulary">
+        <field name="name">Job / Position</field>
+        <field name="namespace_uri">urn:alkathiry:vocab:job</field>
+        <field name="is_system">False</field>
+        <field name="domain">core</field>
+        <field name="description">Optional job/position classification for a level or member.</field>
+    </record>
+
+    <!-- Lightweight department vocabulary (replaces hr.department). -->
+    <record id="vocab_department" model="spp.vocabulary">
+        <field name="name">Department</field>
+        <field name="namespace_uri">urn:alkathiry:vocab:department</field>
+        <field name="is_system">False</field>
+        <field name="domain">core</field>
+        <field name="description">Optional department classification for a level or member.</field>
+    </record>
+</odoo>

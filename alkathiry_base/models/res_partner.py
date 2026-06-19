@@ -31,12 +31,17 @@ class ResPartner(models.Model):
         help="The citizen's node in the tribal lineage (a registry group, e.g. "
         "their family or fakheedah). Independent of where they currently live.",
     )
-    alk_representative_ids = fields.Many2many(
-        "res.users",
-        string="Tribal Representatives",
-        compute="_compute_alk_representatives",
-        help="Officials resolved from the positions matrix by intersecting this "
-        "individual's lineage node with their residential area.",
+    # Beneficiary typing drives which certification hierarchies are offered.
+    alk_user_type = fields.Selection(
+        [
+            ("tribal", "Tribal"),
+            ("citizen", "Citizen"),
+            ("union_member", "Union Member"),
+            ("custom", "Custom"),
+        ],
+        string="Community Type",
+        help="Used to offer the matching certification hierarchies for this "
+        "person's country.",
     )
 
     # --- Demographic / socio-economic dimensions (vocabulary-driven) ---
@@ -87,38 +92,6 @@ class ResPartner(models.Model):
     def _compute_alk_health_condition_count(self):
         for rec in self:
             rec.alk_health_condition_count = len(rec.alk_health_condition_ids)
-
-    @api.depends("alk_tribe_node_id", "alk_tribe_node_id.alk_lineage_path", "area_id")
-    def _compute_alk_representatives(self):
-        positions_model = self.env["alkathiry.tribe.position"]
-        for rec in self:
-            users = self.env["res.users"].browse()
-            node = rec.alk_tribe_node_id
-            if node and node.alk_lineage_path:
-                # Ancestor (and self) node ids read straight from the lineage path.
-                ancestor_ids = [int(x) for x in node.alk_lineage_path.split("/") if x]
-                positions = positions_model.search(
-                    [
-                        ("tribe_id", "in", ancestor_ids),
-                        ("active", "=", True),
-                    ]
-                )
-                positions = positions.filtered(
-                    lambda p, rec=rec: rec._alk_position_covers_area(p)
-                )
-                users = positions.mapped("user_id")
-            rec.alk_representative_ids = users
-
-    def _alk_position_covers_area(self, position):
-        """A position covers the citizen if it has no area scope, or its area is
-        the citizen's residential area or an ancestor of it."""
-        self.ensure_one()
-        if not position.area_id:
-            return True
-        citizen_area = self.area_id
-        if citizen_area and citizen_area.parent_path and position.area_id.parent_path:
-            return citizen_area.parent_path.startswith(position.area_id.parent_path)
-        return False
 
     @api.model_create_multi
     def create(self, vals_list):

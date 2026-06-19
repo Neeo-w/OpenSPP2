@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <!-- ==================== HIERARCHY ==================== -->
+    <record id="view_doc_hierarchy_list" model="ir.ui.view">
+        <field name="name">doc.hierarchy.list</field>
+        <field name="model">doc.hierarchy</field>
+        <field name="arch" type="xml">
+            <list string="Hierarchies">
+                <field name="name" />
+                <field name="type_id" />
+                <field name="country_id" />
+                <field name="level_count" />
+                <field name="active" widget="boolean_toggle" />
+            </list>
+        </field>
+    </record>
+
+    <record id="view_doc_hierarchy_form" model="ir.ui.view">
+        <field name="name">doc.hierarchy.form</field>
+        <field name="model">doc.hierarchy</field>
+        <field name="arch" type="xml">
+            <form string="Hierarchy">
+                <header>
+                    <button name="action_clone_to_country" type="object" string="Clone to country" class="btn-secondary" />
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name" />
+                            <field name="type_id" />
+                        </group>
+                        <group>
+                            <field name="country_id" />
+                            <field name="active" />
+                        </group>
+                    </group>
+                    <separator string="Levels (bottom to top — set 'Reports To' to chain them)" />
+                    <field name="level_ids">
+                        <list editable="bottom">
+                            <field name="sequence" widget="handle" />
+                            <field name="name" />
+                            <field name="kind" />
+                            <field name="parent_level_id" />
+                            <field name="geo_level" optional="hide" />
+                            <field name="area_id" optional="hide" />
+                            <field name="committee_id" optional="hide" />
+                            <field name="documenter_count" string="Members" />
+                            <field name="is_global" optional="hide" />
+                        </list>
+                    </field>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_doc_hierarchy" model="ir.actions.act_window">
+        <field name="name">Hierarchies</field>
+        <field name="res_model">doc.hierarchy</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- ==================== LEVEL (+ org chart) ==================== -->
+    <record id="view_doc_level_form" model="ir.ui.view">
+        <field name="name">doc.level.form</field>
+        <field name="model">doc.level</field>
+        <field name="arch" type="xml">
+            <form string="Level">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name" />
+                            <field name="hierarchy_id" />
+                            <field name="kind" />
+                            <field name="is_global" />
+                        </group>
+                        <group>
+                            <field name="sequence" />
+                            <field name="parent_level_id" />
+                            <field name="geo_level" />
+                            <field name="area_id" />
+                        </group>
+                        <group string="Optional classifications">
+                            <field name="committee_id" />
+                            <field name="job_id" />
+                            <field name="department_id" />
+                        </group>
+                    </group>
+                    <separator string="Members (the beneficiary picks one when several)" />
+                    <field name="documenter_ids">
+                        <list editable="bottom">
+                            <field name="partner_id" />
+                            <field name="user_id" />
+                            <field name="role_id" />
+                            <field name="area_id" optional="hide" />
+                            <field name="committee_id" optional="hide" />
+                            <field name="active" widget="boolean_toggle" />
+                        </list>
+                    </field>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_doc_level_hierarchy" model="ir.ui.view">
+        <field name="name">doc.level.hierarchy</field>
+        <field name="model">doc.level</field>
+        <field name="arch" type="xml">
+            <hierarchy>
+                <field name="parent_level_id" />
+                <field name="child_ids" invisible="1" />
+                <templates>
+                    <t t-name="hierarchy-box">
+                        <div class="o_hierarchy_node_body d-flex flex-column p-2">
+                            <field name="name" class="fw-bold" />
+                            <field name="kind" />
+                            <field name="documenter_count" string="Members" />
+                        </div>
+                    </t>
+                </templates>
+            </hierarchy>
+        </field>
+    </record>
+
+    <record id="action_doc_level_orgchart" model="ir.actions.act_window">
+        <field name="name">Org Chart (Levels)</field>
+        <field name="res_model">doc.level</field>
+        <field name="view_mode">hierarchy,list,form</field>
+    </record>
+
+    <!-- ==================== REQUEST ==================== -->
+    <record id="view_doc_request_list" model="ir.ui.view">
+        <field name="name">doc.request.list</field>
+        <field name="model">doc.request</field>
+        <field name="arch" type="xml">
+            <list string="Requests" decoration-success="state == 'certified'" decoration-danger="state == 'rejected'">
+                <field name="name" />
+                <field name="citizen_id" />
+                <field name="hierarchy_id" />
+                <field name="country_id" />
+                <field name="current_level_id" />
+                <field name="state" widget="badge" />
+            </list>
+        </field>
+    </record>
+
+    <record id="view_doc_request_form" model="ir.ui.view">
+        <field name="name">doc.request.form</field>
+        <field name="model">doc.request</field>
+        <field name="arch" type="xml">
+            <form string="Certification Request">
+                <header>
+                    <button name="action_build_route" type="object" string="Build Route" class="btn-secondary" invisible="state != 'draft'" />
+                    <button name="action_submit" type="object" string="Submit" class="btn-primary" invisible="state != 'draft'" />
+                    <button name="action_approve" type="object" string="Approve / Escalate" class="btn-primary" invisible="state != 'in_review'" />
+                    <button name="action_reject" type="object" string="Reject" class="btn-secondary" invisible="state != 'in_review'" />
+                    <field name="state" widget="statusbar" statusbar_visible="draft,submitted,in_review,certified" />
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1" /></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="citizen_id" />
+                            <field name="hierarchy_id" />
+                        </group>
+                        <group>
+                            <field name="area_id" />
+                            <field name="current_level_id" readonly="1" />
+                            <field name="current_documenter_id" readonly="1" />
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Route">
+                            <field name="route_ids">
+                                <list editable="bottom" default_order="sequence">
+                                    <field name="sequence" />
+                                    <field name="level_id" />
+                                    <field name="documenter_id" domain="[('level_id', '=', level_id)]" />
+                                    <field name="state" widget="badge" />
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Documents">
+                            <field name="document_ids" widget="many2many_binary" />
+                        </page>
+                        <page string="Audit Trail">
+                            <field name="log_ids" readonly="1">
+                                <list>
+                                    <field name="date" />
+                                    <field name="action" />
+                                    <field name="level_id" />
+                                    <field name="user_id" />
+                                    <field name="note" />
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter />
+            </form>
+        </field>
+    </record>
+
+    <record id="view_doc_request_search" model="ir.ui.view">
+        <field name="name">doc.request.search</field>
+        <field name="model">doc.request</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name" />
+                <field name="citizen_id" />
+                <field name="hierarchy_id" />
+                <filter name="in_review" string="In Review" domain="[('state', '=', 'in_review')]" />
+                <filter name="certified" string="Certified" domain="[('state', '=', 'certified')]" />
+                <separator />
+                <filter name="g_state" string="Status" context="{'group_by': 'state'}" />
+                <filter name="g_country" string="Country" context="{'group_by': 'country_id'}" />
+            </search>
+        </field>
+    </record>
+
+    <record id="action_doc_request" model="ir.actions.act_window">
+        <field name="name">Certification Requests</field>
+        <field name="res_model">doc.request</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_doc_request_search" />
+    </record>
+
+    <!-- ==================== WIZARDS ==================== -->
+    <record id="view_doc_route_builder_form" model="ir.ui.view">
+        <field name="name">doc.route.builder.form</field>
+        <field name="model">doc.route.builder</field>
+        <field name="arch" type="xml">
+            <form string="Build Route">
+                <p>Pick the beneficiary's entry level. The route is built from the level
+                    above it up to the shared top, auto-selecting single members.</p>
+                <group>
+                    <field name="hierarchy_id" invisible="1" />
+                    <field name="start_level_id" />
+                </group>
+                <footer>
+                    <button name="action_build" type="object" string="Build" class="btn-primary" />
+                    <button string="Cancel" class="btn-secondary" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_doc_hierarchy_clone_form" model="ir.ui.view">
+        <field name="name">doc.hierarchy.clone.form</field>
+        <field name="model">doc.hierarchy.clone</field>
+        <field name="arch" type="xml">
+            <form string="Clone Hierarchy">
+                <group>
+                    <field name="source_hierarchy_id" readonly="1" />
+                    <field name="target_country_id" />
+                    <field name="keep_members" />
+                </group>
+                <footer>
+                    <button name="action_clone" type="object" string="Clone" class="btn-primary" />
+                    <button string="Cancel" class="btn-secondary" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

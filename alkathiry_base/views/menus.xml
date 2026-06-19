@@ -14,13 +14,6 @@
         action="action_alk_tribe_groups"
         sequence="10"
     />
-    <menuitem
-        id="menu_alk_tribe_positions"
-        name="Org Chart / Ladders"
-        parent="menu_alk_tribes_root"
-        action="action_alk_tribe_position"
-        sequence="20"
-    />
 
     <!-- Unions & Organizations: dedicated bodies whose members are individuals. -->
     <menuitem

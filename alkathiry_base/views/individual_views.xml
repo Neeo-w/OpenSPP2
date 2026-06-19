@@ -14,7 +14,7 @@
                     <group string="Community Identity">
                         <field name="alk_citizen_no" />
                         <field name="alk_tribe_node_id" />
-                        <field name="alk_representative_ids" widget="many2many_tags" readonly="1" />
+                        <field name="alk_user_type" />
                     </group>
                     <group string="Demographics">
                         <field name="alk_blood_type_id" />

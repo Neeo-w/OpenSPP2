@@ -8,4 +8,12 @@
         <field name="prefix">KTH-</field>
         <field name="company_id" eval="False" />
     </record>
+    <record id="seq_doc_request" model="ir.sequence">
+        <field name="name">Certification Request</field>
+        <field name="code">doc.request</field>
+        <field name="implementation">no_gap</field>
+        <field name="padding">6</field>
+        <field name="prefix">DOC-</field>
+        <field name="company_id" eval="False" />
+    </record>
 </odoo>

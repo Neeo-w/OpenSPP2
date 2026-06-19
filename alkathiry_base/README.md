@@ -16,21 +16,39 @@ same dynamic hierarchy `spp.area` uses for geography:
   `urn:openspp:vocab:group-type`), seeded with the tribal levels and flagged
   `allow_all_member_type` so a node can contain sub-groups (group-of-groups).
 
-## Generic leadership ladders + org chart (one engine, the name changes)
-- **`alkathiry.tribe.position`** is ONE engine for every top-down ladder —
-  tribes, unions, committees, organizations. A node is a `position_id` (title)
-  held by a **person** (`partner_id`), scoped to a `area_id` (country /
-  governorate / city), reporting to `parent_position_id`. The body is optional:
-  `tribe_id` (a tribe group) or `organization_id` (a union/committee/org).
-  - **`track_id`** (`urn:alkathiry:vocab:position-track`: sheikhs / aqils / union /
-    committee / organization) is the only thing that changes between ladders.
-  - `_parent_store` + the **hierarchy (org-chart) view** render it top-down like
-    Odoo HR's org chart (depends on `web_hierarchy`).
-  - Constraints: a chain never crosses tracks, and a parent's place must cover
-    the child's — so each ladder is independent per country.
-  - **Clone to country** (`alkathiry.position.clone`): copy a ladder root + its
-    whole subtree to another country, structure only (holders cleared), so the
-    Al-Kathir sheikhs ladder in Yemen can be replicated for Saudi Arabia.
+## Dynamic certification engine — ONE hierarchy engine (merged from the ladder)
+The old one-person-per-node ladder is **merged** into the spec's dynamic
+multi-hierarchy certification model. ONE generic engine now serves every
+structure (tribal / aqils / union / committee / administrative); only the
+terminology changes.
+- **`doc.hierarchy`** — a country-bound hierarchy the Secretary General builds via
+  the UI (no code). `type_id` reuses the `position-track` vocabulary.
+- **`doc.level`** — the generic stage (single engine). `kind` (position /
+  department / committee / region / custom) is just a label; whatever the kind,
+  the hierarchical option is always present: `sequence`, `parent_level_id`, and
+  `documenter_ids` the beneficiary picks one of. Optional classifications reuse
+  existing models — place = **`spp.area`**, committee = **`alkathiry.organization`**,
+  job/department = lightweight vocabularies (no `hr` dependency).
+  `_parent_store` + the **org-chart hierarchy view** render it top-down; a
+  hierarchy can be **cloned to another country** (`doc.hierarchy.clone`).
+- **`doc.documenter`** — a member assigned to a level with a `role_id`
+  (manager / member / assistant / employee), optionally a system `user_id`.
+- **Shared global top** — `is_global` levels (Secretary General + his committees)
+  with no hierarchy, auto-appended to every route, so all routes end at the same
+  place.
+
+### Request workflow (bottom-up, mandatory sequence, audited)
+- **`doc.request`** (`mail.thread`) — the beneficiary picks a hierarchy, the
+  **route builder** (`doc.route.builder`) walks `parent_level_id` from the entry
+  level up, auto-selecting single members and leaving multi-member levels for the
+  beneficiary to choose; documents are uploaded and the request submitted.
+- It is then assigned strictly to the **next member in the route** — no stage may
+  be skipped — until the Secretary General, where it becomes `certified`. Each
+  step is journalled in **`doc.request.log`** (audit trail) and the next member is
+  notified (activity). `doc.request.route` holds the chosen member per level.
+- **Security**: `group_doc_secretary` / `committee` / `documenter` / `beneficiary`
+  with record rules — beneficiaries see their own requests, documenters only what
+  is currently assigned to them, secretary/committee see all.
 
 ## Unions & organizations (dedicated bodies — NOT registry groups)
 Unions/syndicates and organizations are their own entity, with their own clean
@@ -74,4 +92,5 @@ financial-status, disease.
 
 ## Dependencies
 `spp_registry`, `spp_registry_group_hierarchy`, `spp_area`, `spp_vocabulary`,
-`spp_disability_registry`, `web_hierarchy` (for the org-chart view). Odoo 19.0.
+`spp_disability_registry`, `web_hierarchy` (org-chart view), `mail` (request
+audit/notifications). Odoo 19.0.

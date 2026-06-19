@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <!-- Certification: the dynamic multi-hierarchy document-certification app. -->
+    <menuitem
+        id="menu_doc_root"
+        name="Certification"
+        parent="spp_registry.spp_main_menu_root"
+        sequence="22"
+        groups="group_doc_documenter"
+    />
+    <menuitem
+        id="menu_doc_requests"
+        name="Requests"
+        parent="menu_doc_root"
+        action="action_doc_request"
+        sequence="10"
+    />
+    <menuitem
+        id="menu_doc_builder"
+        name="Builder"
+        parent="menu_doc_root"
+        sequence="20"
+        groups="group_doc_committee"
+    />
+    <menuitem
+        id="menu_doc_hierarchies"
+        name="Hierarchies"
+        parent="menu_doc_builder"
+        action="action_doc_hierarchy"
+        sequence="10"
+    />
+    <menuitem
+        id="menu_doc_orgchart"
+        name="Org Chart (Levels)"
+        parent="menu_doc_builder"
+        action="action_doc_level_orgchart"
+        sequence="20"
+    />
+</odoo>

@@ -57,12 +57,6 @@ class ResPartnerLineage(models.Model):
         store=True,
         help="Numeric depth in the lineage tree (0 = grand tribe / root).",
     )
-    # Positions held at this node (tribe x area -> position + official).
-    alk_position_ids = fields.One2many(
-        "alkathiry.tribe.position",
-        "tribe_id",
-        string="Tribal Positions",
-    )
     alk_lineage_member_count = fields.Integer(
         string="Lineage Members",
         compute="_compute_alk_lineage_member_count",

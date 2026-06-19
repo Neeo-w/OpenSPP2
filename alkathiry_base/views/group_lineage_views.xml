@@ -40,18 +40,6 @@
                             <field name="alk_lineage_member_count" string="Members" />
                         </list>
                     </field>
-                    <separator string="Leadership Positions (Ladder x Place -> Holder)" />
-                    <field name="alk_position_ids" nolabel="1" readonly="disabled">
-                        <list editable="bottom">
-                            <field name="track_id" />
-                            <field name="position_id" />
-                            <field name="partner_id" />
-                            <field name="area_id" />
-                            <field name="parent_position_id" optional="hide" />
-                            <field name="user_id" optional="hide" />
-                            <field name="active" widget="boolean_toggle" />
-                        </list>
-                    </field>
                 </page>
             </xpath>
         </field>

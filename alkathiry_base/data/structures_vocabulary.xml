@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <odoo noupdate="1">
     <!--
-        The generic leadership-ladder engine. ONE engine (alkathiry.tribe.position)
-        renders a top-down chain of positions for ANY structure — tribes, unions,
-        committees, organizations. The only thing that changes between them is the
-        terminology: the TRACK below, and the position titles. Each ladder is chained
-        independently per country and can be cloned to another country.
+        Hierarchy-type vocabulary, reused by the certification engine
+        (doc.hierarchy.type_id). ONE generic level engine (doc.level) renders a
+        top-down chain for ANY structure — tribes, unions, committees,
+        organizations, administrative. The only thing that changes between them is
+        the terminology: this TYPE, and the level names. The leadership titles below
+        remain available as an optional job vocabulary.
     -->
     <record id="vocab_position_track" model="spp.vocabulary">
         <field name="name">Ladder / Structure Track</field>

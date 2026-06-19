@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo noupdate="1">
+    <!--
+        The shared global top: a single record set joined by EVERY hierarchy's
+        route. The Secretary General is the final certifier; his committees sit
+        just below. These levels have no hierarchy_id (is_global=True) and are
+        auto-appended to every built route. The Secretary General appoints the
+        members (documenters) himself.
+    -->
+    <record id="level_secretary_general" model="doc.level">
+        <field name="name">Secretary General</field>
+        <field name="kind">position</field>
+        <field name="is_global">True</field>
+        <field name="sequence">1000</field>
+    </record>
+    <record id="level_secretary_committees" model="doc.level">
+        <field name="name">Secretary General Committees</field>
+        <field name="kind">committee</field>
+        <field name="is_global">True</field>
+        <field name="sequence">900</field>
+        <field name="parent_level_id" ref="level_secretary_general" />
+    </record>
+</odoo>

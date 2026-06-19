@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="module_category_doc" model="ir.module.category">
+        <field name="name">Certification</field>
+        <field name="sequence">25</field>
+    </record>
+
+    <record id="group_doc_beneficiary" model="res.groups">
+        <field name="name">Certification / Beneficiary</field>
+        <field name="category_id" ref="module_category_doc" />
+    </record>
+    <record id="group_doc_documenter" model="res.groups">
+        <field name="name">Certification / Documenter</field>
+        <field name="category_id" ref="module_category_doc" />
+        <field name="implied_ids" eval="[(4, ref('group_doc_beneficiary'))]" />
+    </record>
+    <record id="group_doc_committee" model="res.groups">
+        <field name="name">Certification / Committee (Delegated Admin)</field>
+        <field name="category_id" ref="module_category_doc" />
+        <field name="implied_ids" eval="[(4, ref('group_doc_documenter'))]" />
+    </record>
+    <record id="group_doc_secretary" model="res.groups">
+        <field name="name">Certification / Secretary General</field>
+        <field name="category_id" ref="module_category_doc" />
+        <field name="implied_ids" eval="[(4, ref('group_doc_committee'))]" />
+    </record>
+
+    <!-- ============ Record rules on doc.request ============ -->
+    <!-- Beneficiary: only their own requests. -->
+    <record id="rule_doc_request_beneficiary" model="ir.rule">
+        <field name="name">Certification: beneficiary sees own requests</field>
+        <field name="model_id" ref="model_doc_request" />
+        <field name="groups" eval="[(4, ref('group_doc_beneficiary'))]" />
+        <field name="domain_force">[('citizen_id.user_ids', 'in', [user.id])]</field>
+        <field name="perm_read" eval="True" />
+        <field name="perm_write" eval="True" />
+        <field name="perm_create" eval="True" />
+        <field name="perm_unlink" eval="False" />
+    </record>
+    <!-- Documenter: requests where they are the current step's member, plus own. -->
+    <record id="rule_doc_request_documenter" model="ir.rule">
+        <field name="name">Certification: documenter sees assigned requests</field>
+        <field name="model_id" ref="model_doc_request" />
+        <field name="groups" eval="[(4, ref('group_doc_documenter'))]" />
+        <field name="domain_force">['|', ('citizen_id.user_ids', 'in', [user.id]), ('current_documenter_id.user_id', '=', user.id)]</field>
+        <field name="perm_read" eval="True" />
+        <field name="perm_write" eval="True" />
+        <field name="perm_create" eval="True" />
+        <field name="perm_unlink" eval="False" />
+    </record>
+    <!-- Secretary / Committee: full visibility (delegated admin). -->
+    <record id="rule_doc_request_secretary" model="ir.rule">
+        <field name="name">Certification: secretary &amp; committee see all</field>
+        <field name="model_id" ref="model_doc_request" />
+        <field name="groups" eval="[(4, ref('group_doc_committee'))]" />
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+</odoo>
